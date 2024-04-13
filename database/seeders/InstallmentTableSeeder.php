@@ -37,7 +37,7 @@ class InstallmentTableSeeder extends Seeder
             for ($i = 1; $i <= $installmentsNumber; $i++) {
 
                 // calcolo l'importo della rata corrente
-                $currentAmount = ($i < $numberOfInstallments) ? $amountPerInstallment : $price - ($amountPerInstallment * ($numberOfInstallments - 1));
+                $currentAmount = ($i < $installmentsNumber) ? $amountPerInstallment : $price - ($amountPerInstallment * ($installmentsNumber - 1));
 
                 // creo una rata dal model
                 $installment = new Installment();
@@ -50,6 +50,8 @@ class InstallmentTableSeeder extends Seeder
 
                 // assegno una data di scadenza random da 30 a 90 giorni partendo da oggi
                 $installment-> expire_date = now()->addDays(rand(30, 90));
+
+                $installment -> paid = true;
 
                 $installment -> save();
             }

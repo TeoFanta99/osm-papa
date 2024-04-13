@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Client;
 use App\Models\Service;
 use App\Models\ClientService;
+use Carbon\Carbon;
 
 
 class ClientServiceTableSeeder extends Seeder
@@ -31,6 +32,23 @@ class ClientServiceTableSeeder extends Seeder
                 $clientService = new ClientService();
                 $clientService->client_id = $client->id;
                 $clientService->service_id = $service->id;
+                $clientService->price = 100.00;
+                $clientService->customized_price = 100.00;
+                
+                // Genera la data di acquisto utilizzando Carbon
+                $purchaseDate = Carbon::createFromFormat('Y-m-d', '2012-12-12');
+
+                // Assicurati che la data sia stata creata correttamente
+                if (!$purchaseDate) {
+                    // Se la creazione della data fallisce, gestisci l'errore o assegna una data di default
+                    $purchaseDate = Carbon::now(); // Imposta la data corrente come fallback
+                }
+
+                // Assegna la data di acquisto al campo 'purchase_date' del modello ClientService
+                $clientService->purchase_date = $purchaseDate;
+                $clientService->sold_by = 'Mario';
+                $clientService->delivered_by = 'Luigi';
+                $clientService->paid = true;
                 $clientService->save();
             }
         });
