@@ -27,7 +27,11 @@ class InstallmentTableSeeder extends Seeder
             $price = $clientService -> price;
 
             // genera un numero casuale di rate
+<<<<<<< HEAD
             $installmentsNumber = rand(1, 3)
+=======
+            $installmentsNumber = rand(1, 3);
+>>>>>>> 0a7c9c7 (ok)
 
             // calcolo l'importo di ogni rata
             $amountPerInstallment = round($price / $installmentsNumber, 2);
@@ -53,8 +57,12 @@ class InstallmentTableSeeder extends Seeder
 
                 $installment -> save();
             }
+<<<<<<< HEAD
         })
         
 
+=======
+        });
+>>>>>>> 0a7c9c7 (ok)
     }
 }

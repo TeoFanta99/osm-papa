@@ -9,6 +9,9 @@ class ClientService extends Model
 {
     use HasFactory;
 
+    // evito che laravel mi metta al plurale questa tabella
+    protected $table = 'client_service';
+
     public function installment()
     {
         return $this->hasMany(Installment::class);
