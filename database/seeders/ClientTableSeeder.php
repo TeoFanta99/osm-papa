@@ -20,7 +20,7 @@ class ClientTableSeeder extends Seeder
         $consultants = Consultant :: all();
 
         // creo 50 clienti
-        Client :: factory() -> count(50) -> create() -> each(function ($client) use ($consultants) {
+        Client :: factory() -> count(25) -> create() -> each(function ($client) use ($consultants) {
             
             // seleziona un consulente casuale
             $randomConsultant = $consultants -> random();

@@ -22,7 +22,7 @@ class ConsultantTableSeeder extends Seeder
         $levels = Level :: all();
 
         // creo 10 consulenti
-        Consultant :: factory() -> count(10) -> create() -> each(function ($consultant) use ($users, $levels) {
+        Consultant :: factory() -> count(5) -> create() -> each(function ($consultant) use ($users, $levels) {
 
             // seleziona uno user e un level casuale
             $randomUser = $users -> random();
