@@ -17,13 +17,18 @@ class ConsultantTableSeeder extends Seeder
      */
     public function run()
     {
-        Consultant :: factory() -> count(10) -> make() -> each(function($consultant) {
 
-            // associazione ad uno user casuale
-            $user = User :: inRandomOrder() -> first();
-            $consultant -> user() -> associate($user);
-            
-            $consultant -> save();
-        });
+        // Creiamo 5 consulenti
+        $consultants = Consultant::factory()->count(5)->create();
+
+        // Recuperiamo un utente a caso
+        $user = User::inRandomOrder()->first();
+
+        // Associamo i consulenti all'utente
+        foreach ($consultants as $consultant) {
+            $consultant->user()->associate($user);
+            $consultant->save();
+        }
+
     }
 }

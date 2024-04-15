@@ -20,12 +20,12 @@ class ClientTableSeeder extends Seeder
        $consultants = Consultant :: all();
 
         // creo i clienti
-        Client :: factory() -> count(30) -> create() -> each(function($client) use ($consultants) {
-
+        $clients = Client::factory()->count(1)->create();
+        // associo un consulente randomicamente
+        $clients->each(function ($client) use ($consultants) {
             // associo un consulente randomicamente
             $randomConsultant = $consultants->random();
-            $client -> consultant_id = $randomConsultant->id;
-            
+            $client->consultant_id = $randomConsultant->id;
             $client->save();
         });
     }

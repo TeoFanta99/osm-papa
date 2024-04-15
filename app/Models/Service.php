@@ -9,7 +9,7 @@ class Service extends Model
 {
     use HasFactory;
 
-    public function client()
+    public function clients()
     {
         return $this->belongsToMany(Client::class);
     }

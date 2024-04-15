@@ -24,7 +24,7 @@ class LevelTableSeeder extends Seeder
 
         // ciclo sui livelli presenti nel json e li salvo nel DB
         foreach ($levelsJson as $level) {
-
+            
             $newLevel = new Level;
             $newLevel -> name = $level['name'];
             $newLevel -> save();
@@ -33,13 +33,15 @@ class LevelTableSeeder extends Seeder
         // recupero i consulenti
         $consultants = Consultant :: all();
 
-        // ciclo su tutti i consulenti e associo randomicamente uno dei due livelli
-        foreach ($consultants as $consultant) {
+        // recupero i livelli
+        $levels = Level :: all();
 
-            $randomLevel = Level :: inRandomOrder() -> first();
-
-            $consultant -> level() -> associate ($randomLevel);
-            $consultant -> save();
-        }
+        // Cicla su tutti i consulenti e assegna casualmente un livello a ciascun consulente
+        $consultants->each(function ($consultant) use ($levels) {
+            // Associo casualmente un livello tra quelli disponibili
+            $randomLevel = $levels->random();
+            $consultant->level()->associate($randomLevel);
+            $consultant->save();
+        });
     }
 }

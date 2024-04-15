@@ -42,7 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function consultant()
+    public function consultants()
     {
         return $this->hasMany(Consultant::class);
     }
