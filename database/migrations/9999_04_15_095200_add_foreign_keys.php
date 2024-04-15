@@ -28,7 +28,7 @@ return new class extends Migration
         });
 
         Schema::table('installments', function (Blueprint $table) {
-            $table->foreignId('client_service_id')->constrained();
+            $table->foreignId('client_service_id')->constrained('client_service');
         });
     }
 
