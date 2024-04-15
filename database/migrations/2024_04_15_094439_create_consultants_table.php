@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('client_service', function (Blueprint $table) {
+        Schema::create('consultants', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 6, 2);
-            $table->decimal('customized_price', 6, 2);
-            $table->dateTime('purchase_date');
-            $table->string('sold_by');
-            $table->string('delivered_by');
-            $table->boolean('paid');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_service');
+        Schema::dropIfExists('consultants');
     }
 };

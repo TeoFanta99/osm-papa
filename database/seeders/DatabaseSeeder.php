@@ -14,14 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this -> call([
+        $this->call([
             UserTableSeeder :: class,
-            LevelTableSeeder :: class,
-            ConsultantTableSeeder :: class,
-            ClientTableSeeder :: class,
-            ServiceTableSeeder :: class,
-            ClientServiceTableSeeder::class,
-            InstallmentTableSeeder :: class,
         ]);
     }
 }
