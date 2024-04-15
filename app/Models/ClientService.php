@@ -8,11 +8,11 @@ use App\Models\Installment;
 
 class ClientService extends Model
 {
+   
+    use HasFactory;
 
     // evito che laravel mi metta al plurale questa tabella
     protected $table = 'client_service';
-    
-    use HasFactory;
 
     public function installment() 
     {
