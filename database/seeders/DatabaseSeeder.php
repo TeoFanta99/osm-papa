@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ConsultantTableSeeder :: class,
             ClientTableSeeder :: class,
             ServiceTableSeeder :: class,
+            ClientServiceTableSeeder :: class,
         ]);
     }
 }
