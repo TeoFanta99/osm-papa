@@ -16,10 +16,14 @@ class InstallmentFactory extends Factory
      */
     public function definition()
     {
+
+        $client_service = ClientService :: inRandomOrder() -> first();
+
         return [
             'amount' => fake() -> randomFloat(2, 100, 1000000),
             'expire_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'paid' => fake() -> boolean(),
+            'client_service_id' => $client_service->id,
         ];
     }
 }

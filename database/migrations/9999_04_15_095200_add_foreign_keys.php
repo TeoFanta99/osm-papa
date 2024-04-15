@@ -26,6 +26,10 @@ return new class extends Migration
             $table->foreignId('client_id') -> constrained();
             $table->foreignId('service_id') -> constrained();
         });
+
+        Schema::table('installments', function (Blueprint $table) {
+            $table->foreignId('client_service_id')->constrained();
+        });
     }
 
     /**
@@ -52,6 +56,11 @@ return new class extends Migration
             $table->dropColumn(['client_id']);
             $table->dropForeign(['service_id']);
             $table->dropColumn(['service_id']);
+        });
+
+        Schema::table('installments', function (Blueprint $table) {
+            $table->dropForeign(['client_service_id']);
+            $table->dropColumn(['client_service_id']);
         });
 
 
