@@ -16,6 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserTableSeeder :: class,
+            LevelTableSeeder :: class,
+            ConsultantTableSeeder :: class,
+            ClientTableSeeder :: class,
+            ServiceTableSeeder :: class,
         ]);
     }
 }
