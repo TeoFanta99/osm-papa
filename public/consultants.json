@@ -1,10 +1,37 @@
 [
     {
-        "name": "Sara",
+        "name": "Saverio",
+        "lastname": "Fantacuzzi",
         "level": "Senior"
     },
     {
         "name": "Stefano",
+        "lastname": "Sala",
         "level": "Senior"
+    },
+    {
+        "name": "Sara",
+        "lastname": "Grimoldi",
+        "level": "Senior"
+    },
+    {
+        "name": "Federico",
+        "lastname": "Parodi",
+        "level": "Senior"
+    },
+    {
+        "name": "Pia",
+        "lastname": "Longoni",
+        "level": "Junior"
+    },
+    {
+        "name": "Luca",
+        "lastname": "Mantegazza",
+        "level": "Junior"
+    },
+    {
+        "name": "Fabio",
+        "lastname": "Tessarolo",
+        "level": "Junior"
     }
 ]

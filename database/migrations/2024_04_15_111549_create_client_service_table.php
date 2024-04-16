@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('client_service', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 9, 2);
-            $table->decimal('customized_price', 9, 2);
+            $table->decimal('price', 9, 2) ->nullable;
+            $table->decimal('customized_price', 9, 2) ->nullable;
             $table->dateTime('purchase_date');
             $table->string('sold_by');
             $table->string('delivered_by');
