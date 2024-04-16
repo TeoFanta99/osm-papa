@@ -15,7 +15,16 @@ class ServiceTableSeeder extends Seeder
      */
     public function run()
     {
-        // creo 10 tipologie di servizi
-        Service :: factory() -> count(10) -> create();
+        $jsonServices = file_get_contents(public_path('services.json'));
+        $servicesDecoded = json_decode($jsonServices, true);
+
+        foreach ($servicesDecoded as $service) {
+
+            $newService = new Service();
+            $newService->name = $service['name'];
+            $newService->price = $service['price'];
+            $newService->save();
+            
+        }
     }
 }

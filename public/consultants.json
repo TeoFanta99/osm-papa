@@ -2,36 +2,43 @@
     {
         "name": "Saverio",
         "lastname": "Fantacuzzi",
-        "level": "Senior"
+        "level_id": 2,
+        "user_id": 1
     },
     {
         "name": "Stefano",
         "lastname": "Sala",
-        "level": "Senior"
+        "level_id": 2,
+        "user_id": 1
     },
     {
         "name": "Sara",
         "lastname": "Grimoldi",
-        "level": "Senior"
+        "level_id": 2,
+        "user_id": 1
     },
     {
         "name": "Federico",
         "lastname": "Parodi",
-        "level": "Senior"
+        "level_id": 2,
+        "user_id": 1
     },
     {
         "name": "Pia",
         "lastname": "Longoni",
-        "level": "Junior"
+        "level_id": 1,
+        "user_id": 1
     },
     {
         "name": "Luca",
         "lastname": "Mantegazza",
-        "level": "Junior"
+        "level_id": 1,
+        "user_id": 1
     },
     {
         "name": "Fabio",
         "lastname": "Tessarolo",
-        "level": "Junior"
+        "level_id": 1,
+        "user_id": 1
     }
 ]

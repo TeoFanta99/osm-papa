@@ -39,8 +39,8 @@ class ClientServiceTableSeeder extends Seeder
             $clientService->price = $service->price;
             $clientService->customized_price = $service->price;
             $clientService->purchase_date = Carbon::now(); 
-            $clientService->sold_by = $sellerConsultant->name; 
-            $clientService->delivered_by = $deliverConsultant->name; 
+            $clientService->sold_by = $sellerConsultant->name . ' ' . $sellerConsultant->lastname; 
+            $clientService->delivered_by = $deliverConsultant->name . ' ' . $deliverConsultant->lastname; 
             
             // Genera casualmente lo stato "paid"
             $isPaid = rand(0, 1);

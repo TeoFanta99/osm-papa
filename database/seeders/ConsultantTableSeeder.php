@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Level;
 use App\Models\Consultant;
 
 class ConsultantTableSeeder extends Seeder
@@ -17,22 +15,18 @@ class ConsultantTableSeeder extends Seeder
      */
     public function run()
     {
-        // recupero gli users e i levels
-        $users = User :: all();
-        $levels = Level :: all();
+        $jsonConsultants = file_get_contents(public_path('consultants.json'));
+        $consultantsDecoded = json_decode($jsonConsultants, true);
 
-        // creo 10 consulenti
-        Consultant :: factory() -> count(5) -> create() -> each(function ($consultant) use ($users, $levels) {
+        foreach ($consultantsDecoded as $consultant) {
 
-            // seleziona uno user e un level casuale
-            $randomUser = $users -> random();
-            $randomLevel = $levels -> random();
-
-            // assegna lo user e il level al consultant
-            $consultant -> user() -> associate($randomUser);
-            $consultant -> level() -> associate($randomLevel);
-            $consultant -> save();
-
-        });
+            $newConsultant = new Consultant();
+            $newConsultant->name = $consultant['name'];
+            $newConsultant->lastname = $consultant['lastname'];
+            $newConsultant->level_id = $consultant['level_id'];
+            $newConsultant->user_id = $consultant['user_id'];
+            $newConsultant->save();
+            
+        };
     }
 }
