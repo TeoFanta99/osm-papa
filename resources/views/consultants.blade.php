@@ -4,7 +4,7 @@
 <div class="main_container d-flex">
     @include('components.sidebar')
     <main>
-        main page
+        pagina dei consulenti
     </main>
 </div>
 
