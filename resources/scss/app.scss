@@ -4,9 +4,9 @@
 @import '@fortawesome/fontawesome-free/css/solid.css';
 @import '@fortawesome/fontawesome-free/css/brands.css';
 
-.main_container {
-    height: calc(100vh - 56px);
-
+main {
+    display: flex;
+    height: 100vh;
 }
 
 .left-menu {
@@ -38,6 +38,9 @@
     }
 }
 
-main {
+.main-content {
     background-color: rgb(236, 236, 236);
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
 }
