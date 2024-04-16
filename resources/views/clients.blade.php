@@ -4,12 +4,12 @@
 @include('components.sidebar')
 <div class="main-content">
 
-    <h1>I tuoi consulenti</h1>
+    <h1>I tuoi clienti</h1>
 
     <div class="ms_container d-flex flex-wrap">
-        @foreach ($consultants as $consultant)
+        @foreach ($clients as $client)
         <div class="ms_col col-12 col-md-6 col-lg-4">
-            <a href="#">{{$consultant -> name}} {{$consultant -> lastname}}</a>
+            <a href="#">{{$client -> name}}</a>
         </div>
         @endforeach
 
@@ -34,6 +34,7 @@
                 border: 1px solid black;
                 min-height: 200px;
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
             }

@@ -13,13 +13,13 @@
         </a>
     </div>
     <div class="ms_btn consultants-btn">
-        <a href="{{ route('consultants') }}">
+        <a href="{{ route('index.consultants') }}">
             <i class="fa-solid fa-people-group"></i>
             <span>Consulenti</span>
         </a>
     </div>
     <div class="ms_btn clients-btn">
-        <a href="">
+        <a href="{{ route('index.clients') }}">
             <i class="fa-solid fa-building"></i>
             <span>Clienti</span>
         </a>
@@ -35,5 +35,5 @@
 </div>
 
 <style>
-    @import url("{{ asset('css/app.scss') }}");
+    /* @import url("{{ asset('scss/app.scss') }}"); */
 </style>

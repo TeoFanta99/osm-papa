@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ConsultantController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', [MainController :: class, 'index']) -> name('welcome');
-    Route::get('/consultants', [ConsultantController :: class, 'index']) -> name('consultants');
+    Route::get('/consultants', [ConsultantController :: class, 'index']) -> name('index.consultants');
+    Route::get('/clients', [ClientController :: class, 'index']) -> name('index.clients');
+    Route::get('/newevent', [ClientServiceController :: class, 'index']) -> name('index.newevent');
+    Route::post('/newevent', [ClientServiceController :: class, 'store']) -> name('event.store');
 });
 
 require __DIR__.'/auth.php';
