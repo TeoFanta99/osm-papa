@@ -1,1 +1,43 @@
-@import '~bootstrap/scss/bootstrap'
+@import '~bootstrap/scss/bootstrap';
+@import '@fortawesome/fontawesome-free/css/fontawesome.css';
+@import '@fortawesome/fontawesome-free/css/regular.css';
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/brands.css';
+
+.main_container {
+    height: calc(100vh - 56px);
+
+}
+
+.left-menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #b13274;
+    color: white;
+    width: 300px;
+
+
+    .ms_btn {
+        font-size: 25px;
+        margin: 20px;
+        display: flex;
+
+        a {
+            text-decoration: none;
+            color: white;
+            padding: 20px 10px;
+
+            &:hover {
+                color: #46e3ff;
+            }
+
+            span {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+main {
+    background-color: rgb(236, 236, 236);
+}
