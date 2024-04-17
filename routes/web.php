@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ConsultantController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ClientServiceController;
 
 /*
@@ -31,8 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [MainController :: class, 'index']) -> name('welcome');
     Route::get('/consultants', [ConsultantController :: class, 'index']) -> name('index.consultants');
     Route::get('/clients', [ClientController :: class, 'index']) -> name('index.clients');
-    Route::get('/newevent', [ClientServiceController :: class, 'index']) -> name('index.newevent');
-    Route::post('/newevent', [ClientServiceController :: class, 'store']) -> name('event.store');
+    Route::get('/invoices', [InvoiceController :: class, 'index']) -> name('index.invoices');
+    Route::get('/create-newInvoice', [ClientServiceController :: class, 'create']) -> name('create.newInvoice');
+    Route::post('/create-newInvoice', [ClientServiceController :: class, 'store']) -> name('store.invoice');
 });
 
 require __DIR__.'/auth.php';

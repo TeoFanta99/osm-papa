@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->decimal('price', 9, 2) ->nullable();
             $table->decimal('customized_price', 9, 2) ->nullable();
-            $table->dateTime('purchase_date');
+            $table->dateTime('invoice_date');
             $table->string('sold_by');
             $table->string('delivered_by');
             $table->boolean('paid');

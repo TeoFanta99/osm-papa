@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Service;
-use App\Models\Client;
 use App\Models\ClientService;
-use App\Models\Consultant;
-use App\Models\User;
 
-class ClientServiceController extends Controller
+class InvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +14,9 @@ class ClientServiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = ClientService::all();
+
+        return view ('invoices', compact('invoices'));
     }
 
     /**
@@ -28,11 +26,7 @@ class ClientServiceController extends Controller
      */
     public function create()
     {
-        $services = Service::all();
-        $clients = Client::all();
-        $consultants = Consultant::all();
-
-        return view('newInvoice', compact('services', 'clients', 'consultants'));
+        //
     }
 
     /**
@@ -43,20 +37,7 @@ class ClientServiceController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request -> all();
-
-        $invoice = new ClientService();
-        $invoice->price = $data['price'];
-        $invoice->invoice_date = $data['invoice_date'];
-        $invoice->sold_by = $data['sold_by'];
-        $invoice->delivered_by = $data['delivered_by'];
-        $invoice->client_id = $data['client'];
-        $invoice->service_id = $data['service'];
-        $invoice->paid = false;
-
-        $invoice -> save();
-
-        return redirect() -> route('index.invoices', $invoice->id);
+        //
     }
 
     /**

@@ -23,7 +23,7 @@ class ClientServiceFactory extends Factory
         return [
             'price' => fake() -> randomFloat(2, 100, 1000000),
             'customized_price' => fake() -> randomFloat(2, 100, 1000000),
-            'purchase_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
+            'invoice_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'sold_by' => $randomConsultant->name . $randomConsultant->lastname,
             'delivered_by' => $randomConsultant->name . $randomConsultant->lastname,
             'paid' => fake() -> boolean(),

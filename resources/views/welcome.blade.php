@@ -7,7 +7,7 @@
     @auth
     <div class="button_container">
         <button class="ms_button">
-            <a href="{{route('index.newevent')}}">AGGIUNGI NUOVO EVENTO</a>
+            <a href="{{route('create.newInvoice')}}">AGGIUNGI NUOVA FATTURA</a>
         </button>
     </div>
     @endauth

@@ -4,7 +4,7 @@
 
 @include('components.sidebar')
 <div class="main-content">
-    <h2>Crea un nuovo movimento</h2>
+    <h2>Creazione fattura</h2>
     <form method="POST" enctype="multipart/form-data">
 
         @csrf
@@ -23,7 +23,7 @@
         <br>
         <select name="client" id="client">
             @foreach ($clients as $client)
-            <option value="">{{$client ->name}}</option>
+            <option value="{{$client->id}}">{{$client ->name}}</option>
             @endforeach
         </select>
         <br><br>
@@ -31,7 +31,7 @@
         <br>
         <select name="sold_by" id="sold_by">
             @foreach ($consultants as $consultant)
-            <option value="">{{$consultant ->name}} {{$consultant -> lastname}}</option>
+            <option value="{{$consultant->id}}">{{$consultant ->name}} {{$consultant -> lastname}}</option>
             @endforeach
         </select>
         <br><br>
@@ -39,12 +39,14 @@
         <br>
         <select name="delivered_by" id="delivered_by">
             @foreach ($consultants as $consultant)
-            <option value="">{{$consultant ->name}} {{$consultant -> lastname}}</option>
+            <option value="{{$consultant->id}}">{{$consultant ->name}} {{$consultant -> lastname}}</option>
             @endforeach
         </select>
         <br><br>
-        <label for="purchase_date">Data di scadenza</label>
-        <input type="datetime" name="purchase_date" id="purchase_date">
+        <label for="invoice_date">Data fattura</label><br>
+        <input type="date" name="invoice_date" id="invoice_date">
+        {{-- aggiungere n. fattura --}}
+        {{-- aggiungere suddivisione rate --}}
         <br><br><br>
         <input class="create-btn" type="submit" value="Crea">
     </form>

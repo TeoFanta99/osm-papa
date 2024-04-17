@@ -24,6 +24,12 @@
             <span>Clienti</span>
         </a>
     </div>
+    <div class="ms_btn purchases-btn">
+        <a href="{{route('index.invoices')}}">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Fatture</span>
+        </a>
+    </div>
     <div class="ms_btn stats-btn">
         <a href="">
             <i class="fa-solid fa-chart-line"></i>
