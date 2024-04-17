@@ -20,4 +20,9 @@ class Client extends Model
     {
         return $this -> belongsToMany(Service :: class);
     }
+
+    public function clientServices()
+    {
+        return $this -> hasMany(ClientService :: class);
+    }
 }

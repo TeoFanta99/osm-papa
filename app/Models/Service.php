@@ -14,4 +14,9 @@ class Service extends Model
     {
         return $this -> belongsToMany(Client :: class);
     }
+
+    public function clientServices()
+    {
+        return $this -> hasMany(ClientService :: class);
+    }
 }

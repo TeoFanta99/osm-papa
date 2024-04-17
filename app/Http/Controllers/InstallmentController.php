@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ClientService;
-use App\Models\Consultant;
 use App\Models\Installment;
 use App\Models\Client;
+use App\Models\ClientService;
+use App\Models\Consultant;
 
-
-class InvoiceController extends Controller
+class InstallmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +17,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        // recupera le fatture e le ordina per id decrescente
-        $invoices = ClientService::orderBy('id', 'desc')->get();
-
-        $consultants = Consultant :: all();
-
-        return view ('invoices', compact('invoices', 'consultants'));
+        //
     }
 
     /**
@@ -31,9 +25,12 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($clientServiceId)
     {
-        //
+        // ottengo solo le rate relative alla fattura con quel client_service_id
+        $installments = Installment::where('client_service_id', $clientServiceId)->get();
+
+        return view ('pages.installments', compact('installments'));
     }
 
     /**
@@ -55,11 +52,7 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        $invoice = ClientService::find($id);
-        $consultants = Consultant :: all();
-        $installments = Installment :: all();
-
-        return view ('pages.invoice', compact('invoice', 'consultants', 'installments'));
+        //
     }
 
     /**

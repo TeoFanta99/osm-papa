@@ -6,6 +6,7 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\ConsultantController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\ClientServiceController;
 
 /*
@@ -34,7 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients', [ClientController :: class, 'index']) -> name('index.clients');
     Route::get('/invoices', [InvoiceController :: class, 'index']) -> name('index.invoices');
     Route::get('/create-newInvoice', [ClientServiceController :: class, 'create']) -> name('create.newInvoice');
+    Route::get('/create-installments/{clientServiceId}', [InstallmentController :: class, 'create']) -> name('create.installments');
     Route::post('/create-newInvoice', [ClientServiceController :: class, 'store']) -> name('store.invoice');
+    Route::get('/invoice/{id}', [InvoiceController :: class, 'show']) -> name('show.invoice');
+
 });
+
 
 require __DIR__.'/auth.php';
