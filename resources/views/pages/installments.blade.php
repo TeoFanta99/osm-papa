@@ -7,7 +7,76 @@
     <div class="container_macro">
         <div class="section-container">
             <div class="ms_card card">
-                <span>siamo le rate della fattura n. {{$invoice->id}}</span>
+                <h3>Cosa vuoi fare?</h3>
+
+                <div class="button_container mb-4">
+                    <button class="ms_button" id="new_installment_btn" onclick="showNewInstallmentForm()">Crea una nuova
+                        rata</button>
+                    <button class="ms_button" id="edit_installment_btn" onclick="showEditInstallmentForm()">Modifica le
+                        rate</button>
+                    <button class="ms_button">
+                        <a href="{{route('show.invoice', $invoice->id)}}">TORNA INDIETRO</a>
+                    </button>
+                </div>
+
+                <div id="new_installment_form" style="display: none;">
+                    <form method="POST" action="{{route('store.installments')}}" enctype="multipart/form-data">
+
+                        @csrf
+                        @method("POST")
+
+                        <input type="hidden" name="client_service_id" value="{{ $invoice->id }}">
+
+                        <label for="amount">Totale rata</label>
+                        <input type="number" name="amount" id="amount">
+                        <br>
+
+                        <label for="expire_date">Data di scadenza</label>
+                        <input type="date" name="expire_date" id="expire_date">
+                        <br>
+
+                        <label for="paid">È stata pagata?</label>
+                        <select name="paid" id="paid">
+                            <option value="0">No</option>
+                            <option value="1">Sì</option>
+                        </select>
+                        <br>
+
+                        <input class="mt-4" type="submit" value="Crea">
+                    </form>
+                </div>
+
+
+
+                <form action="{{route('update.installments', $installment)}}" method="POST" id="edit_installment_form"
+                    style="display: none;" class="mb-4">
+                    @csrf
+                    @method('PUT')
+
+                    @if($installments->isEmpty())
+                    <span><b>NESSUNA RATA DISPONIBILE</b></span>
+
+                    @else
+                    @foreach ($installments as $installment)
+                    <label for="amount">Totale rata: </label>
+                    <input type="number" name="amount" id="amount" value="{{$installment->amount}}">
+                    <br>
+                    <label for="expire_date">Data di scadenza: </label>
+                    <input type="date" name="expire_date" id="expire_date" value="{{$installment->expire_date}}">
+                    <br>
+                    <label for="paid">È stata pagata? </label>
+                    <select name="paid" id="paid">
+                        <option value="0" {{ $installment->paid == 0 ? 'selected' : '' }}>No</option>
+                        <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Sì</option>
+                    </select>
+                    <br><br><br>
+                    <input type="submit" value="SALVA">
+                    @endforeach
+
+                    @endif
+
+                </form>
+
             </div>
         </div>
     </div>
@@ -15,6 +84,26 @@
 
 @endsection
 
+@push('scripts')
+<script>
+    function showNewInstallmentForm() {
+    let newInstallmentForm = document.getElementById('new_installment_form');
+    let editInstallmentForm = document.getElementById('edit_installment_form');
+
+    newInstallmentForm.style.display = 'block';
+    editInstallmentForm.style.display = 'none';
+}
+
+function showEditInstallmentForm() {
+    let newInstallmentForm = document.getElementById('new_installment_form');
+    let editInstallmentForm = document.getElementById('edit_installment_form');
+
+    newInstallmentForm.style.display = 'none';
+    editInstallmentForm.style.display = 'block';
+}
+
+</script>
+@endpush
 
 <style scoped lang="scss">
     .container_macro {

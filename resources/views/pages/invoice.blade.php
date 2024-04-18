@@ -53,8 +53,7 @@
 
                 <div class="installment-card-container d-flex flex-wrap mb-4">
                     @foreach ($installments as $installment)
-                    <a href="https://www.google.it" class="col-12 col-lg-6 col-xxl-4"
-                        style="text-decoration: none; color: black;">
+                    <a href="#" class="col-12 col-lg-6 col-xxl-4" style="text-decoration: none; color: black;">
                         <div class=" p-1">
                             <div class="installment-card p-3">
                                 <span>Rata n. {{ $loop->iteration }}</span>

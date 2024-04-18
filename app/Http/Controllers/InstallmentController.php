@@ -16,9 +16,10 @@ class InstallmentController extends Controller
     public function index($id)
     {
         $invoice = ClientService::find($id);
-        $installments = Installment::all();
+        $installment = Installment :: find($id);
+        $installments = Installment::where('client_service_id', $id)->get();
 
-        return view('pages.installments', compact('installments', 'invoice'));
+        return view('pages.installments', compact('installments', 'invoice', 'installment'));
     }
 
     /**
@@ -39,7 +40,28 @@ class InstallmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Valida i dati della richiesta
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'expire_date' => 'required|date',
+            'paid' => 'required|boolean',
+            'client_service_id' => 'required|numeric',
+        ]);
+
+        // recupera l'ID dell'invoice (client_service_id) dalla richiesta
+        $clientServiceId = $request->client_service_id;
+
+        // crea nuova rata
+        $installment = new Installment();
+        $installment->amount = $request->amount;
+        $installment->expire_date = $request->expire_date;
+        $installment->paid = $request->paid;
+        $installment->client_service_id = $clientServiceId;
+        $installment->save();
+
+        // Redirect alla pagina specifica della fattura
+        return redirect()->route('show.invoice', $clientServiceId);
+
     }
 
     /**
@@ -73,7 +95,24 @@ class InstallmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $invoice = ClientService::find($id);
+        
+        $installments = Installment::where('client_service_id', $invoice->id)->get();
+        
+        foreach ($installments as $installment) {
+            
+            $data = $request -> all();
+
+            $installment -> amount = $data['amount'];
+            $installment -> expire_date = $data['expire_date'];
+            $installment -> paid = $data['paid'];
+            
+            $installment -> save();
+        }
+        
+        $invoiceID = $invoice->id;
+
+        return redirect() -> route('show.invoice', $invoiceID);
     }
 
     /**

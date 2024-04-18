@@ -7,6 +7,7 @@ use App\Models\ClientService;
 use App\Models\Consultant;
 use App\Models\Installment;
 use App\Models\Client;
+use App\Models\Service;
 
 
 class InvoiceController extends Controller
@@ -33,7 +34,11 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        //
+        $services = Service::all();
+        $clients = Client::all();
+        $consultants = Consultant::all();
+
+        return view('newInvoice', compact('services', 'clients', 'consultants'));
     }
 
     /**
@@ -44,7 +49,20 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request -> all();
+
+        $invoice = new ClientService();
+        $invoice->price = $data['price'];
+        $invoice->invoice_date = $data['invoice_date'];
+        $invoice->sold_by = $data['sold_by'];
+        $invoice->delivered_by = $data['delivered_by'];
+        $invoice->client_id = $data['client'];
+        $invoice->service_id = $data['service'];
+        $invoice->paid = false;
+
+        $invoice -> save();
+        
+        return redirect() -> route('index.invoices', $invoice->id);
     }
 
     /**
