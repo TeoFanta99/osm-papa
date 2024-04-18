@@ -46,8 +46,6 @@
                     </form>
                 </div>
 
-
-
                 <form action="{{route('update.installments', $installment)}}" method="POST" id="edit_installment_form"
                     style="display: none;" class="mb-4">
                     @csrf
@@ -58,21 +56,23 @@
 
                     @else
                     @foreach ($installments as $installment)
-                    <label for="amount">Totale rata: </label>
-                    <input type="number" name="amount" id="amount" value="{{$installment->amount}}">
+                    <label for="amount_{{ $installment->id }}">Totale rata: </label>
+                    <input type="number" name="amount_{{ $installment->id }}" id="amount_{{ $installment->id }}"
+                        value="{{$installment->amount}}">
                     <br>
-                    <label for="expire_date">Data di scadenza: </label>
-                    <input type="date" name="expire_date" id="expire_date" value="{{$installment->expire_date}}">
+                    <label for="expire_date_{{ $installment->id }}">Data di scadenza: </label>
+                    <input type="date" name="expire_date_{{ $installment->id }}" id="expire_date_{{ $installment->id }}"
+                        value="{{$installment->expire_date}}">
                     <br>
-                    <label for="paid">È stata pagata? </label>
-                    <select name="paid" id="paid">
+                    <label for="paid_{{ $installment->id }}">È stata pagata? </label>
+                    <select name="paid_{{ $installment->id }}" id="paid_{{ $installment->id }}">
                         <option value="0" {{ $installment->paid == 0 ? 'selected' : '' }}>No</option>
                         <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Sì</option>
                     </select>
                     <br><br><br>
-                    <input type="submit" value="SALVA">
-                    @endforeach
 
+                    @endforeach
+                    <input type="submit" value="SALVA">
                     @endif
 
                 </form>

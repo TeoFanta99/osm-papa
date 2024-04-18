@@ -10,6 +10,12 @@ class Installment extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'amount', 
+        'expire_date',
+        'paid',
+    ];
+
     public function client_service()
     {
         return $this -> belongsTo(ClientService :: class);

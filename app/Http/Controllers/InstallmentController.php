@@ -100,20 +100,20 @@ class InstallmentController extends Controller
         $installments = Installment::where('client_service_id', $invoice->id)->get();
         
         foreach ($installments as $installment) {
+            $data = [
+                'amount' => $request->input('amount_' . $installment->id),
+                'expire_date' => $request->input('expire_date_' . $installment->id),
+                'paid' => $request->input('paid_' . $installment->id),
+            ];
             
-            $data = $request -> all();
-
-            $installment -> amount = $data['amount'];
-            $installment -> expire_date = $data['expire_date'];
-            $installment -> paid = $data['paid'];
-            
-            $installment -> save();
+            $installment->update($data);
         }
         
         $invoiceID = $invoice->id;
 
-        return redirect() -> route('show.invoice', $invoiceID);
+        return redirect()->route('show.invoice', $invoiceID);
     }
+
 
     /**
      * Remove the specified resource from storage.
