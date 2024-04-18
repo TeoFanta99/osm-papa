@@ -62,7 +62,7 @@
                     <br>
                     <label for="expire_date_{{ $installment->id }}">Data di scadenza: </label>
                     <input type="date" name="expire_date_{{ $installment->id }}" id="expire_date_{{ $installment->id }}"
-                        value="{{$installment->expire_date}}">
+                        value="{{ date('Y-m-d', strtotime($installment->expire_date)) }}">
                     <br>
                     <label for="paid_{{ $installment->id }}">È stata pagata? </label>
                     <select name="paid_{{ $installment->id }}" id="paid_{{ $installment->id }}">

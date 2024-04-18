@@ -60,7 +60,7 @@
                                 <br><br>
                                 <span>Totale rata: {{$installment->amount}} €</span>
                                 <br><br>
-                                <span>Scadenza: {{$installment->expire_date}}</span>
+                                <span>Scadenza: {{ date('Y-m-d', strtotime($installment->expire_date)) }}</span>
                                 <br><br>
                                 <span>Stato pagamento: </span>
                                 <span class="{{$installment->paid ? 'text-success' : 'text-danger'}}"
