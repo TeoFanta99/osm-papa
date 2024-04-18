@@ -47,6 +47,12 @@
         <input type="date" name="invoice_date" id="invoice_date">
         {{-- aggiungere n. fattura --}}
         {{-- aggiungere suddivisione rate --}}
+        <br><br>
+        <label for="installments_number">Numero di rate</label><br>
+        <select name="installments_number" id="installments_number" class="w-25">
+            @for ($i = 0; $i < 5; $i++) <option value="{{$i}}">{{$i}}</option>
+                @endfor
+        </select>
         <br><br><br>
         <input class="create-btn" type="submit" value="Crea">
     </form>

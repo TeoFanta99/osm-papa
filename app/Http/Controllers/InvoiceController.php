@@ -57,7 +57,7 @@ class InvoiceController extends Controller
     {
         $invoice = ClientService::find($id);
         $consultants = Consultant :: all();
-        $installments = Installment :: all();
+        $installments = Installment::where('client_service_id', $id)->get();
 
         return view ('pages.invoice', compact('invoice', 'consultants', 'installments'));
     }

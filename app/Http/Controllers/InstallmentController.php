@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Installment;
-use App\Models\Client;
 use App\Models\ClientService;
-use App\Models\Consultant;
 
 class InstallmentController extends Controller
 {
@@ -15,9 +13,12 @@ class InstallmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $invoice = ClientService::find($id);
+        $installments = Installment::all();
+
+        return view('pages.installments', compact('installments', 'invoice'));
     }
 
     /**
@@ -25,12 +26,9 @@ class InstallmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($clientServiceId)
+    public function create()
     {
-        // ottengo solo le rate relative alla fattura con quel client_service_id
-        $installments = Installment::where('client_service_id', $clientServiceId)->get();
-
-        return view ('pages.installments', compact('installments'));
+        //
     }
 
     /**

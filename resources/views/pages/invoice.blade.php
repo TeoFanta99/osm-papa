@@ -5,7 +5,7 @@
 @include('components.sidebar')
 <div class="main-content">
     <div class="container_macro">
-        <div class="invoice-container">
+        <div class="section-container">
             <div class="ms_card card">
                 <span class="invoice-number-style"><b>Fattura n. {{$invoice->id}}</b></span>
                 <span class="client-style">Cliente: {{$invoice->client->name}}</span>
@@ -37,12 +37,11 @@
                     Consulente non trovato
                     @endif
                 </span>
+                <span class="paid-style">Fattura pagata interamente: {{$invoice->paid ? 'Sì' : 'No'}}</span>
+            </div>
 
-                <div class="button_container">
-                    <button class="ms_button">
-                        <a href="{{route('create.installments', $invoice->id)}}">GESTISCI RATEIZZAZIONE</a>
-                    </button>
-                </div>
+            <div class="ms_card card">
+                <h3>RATE</h3>
 
                 {{-- logica che mi conta il numero di rate associate a questo client_service_id --}}
                 @php
@@ -50,9 +49,38 @@
                 $installmentsCount = $invoice->installments()->count();
                 @endphp
 
-                <span>Numero di rate: {{ $installmentsCount }}</span>
+                <span class="mb-3">Numero di rate: {{ $installmentsCount }}</span>
 
+                <div class="installment-card-container d-flex flex-wrap mb-4">
+                    @foreach ($installments as $installment)
+                    <a href="https://www.google.it" class="col-12 col-lg-6 col-xxl-4"
+                        style="text-decoration: none; color: black;">
+                        <div class=" p-1">
+                            <div class="installment-card p-3">
+                                <span>Rata n. {{ $loop->iteration }}</span>
+                                <br><br>
+                                <span>Totale rata: {{$installment->amount}} €</span>
+                                <br><br>
+                                <span>Scadenza: {{$installment->expire_date}}</span>
+                                <br><br>
+                                <span>Stato pagamento: </span>
+                                <span class="{{$installment->paid ? 'text-success' : 'text-danger'}}"
+                                    style="font-weight: bold">
+                                    {{$installment->paid ? 'Pagata' : 'Non pagata'}}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+
+                <div class="button_container">
+                    <button class="ms_button">
+                        <a href="{{route('index.installments', $invoice->id)}}">GESTISCI RATEIZZAZIONE</a>
+                    </button>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -66,17 +94,20 @@
         display: flex;
         justify-content: center;
 
-        .invoice-container {
-            width: 80%;
+        .section-container {
+            width: 90%;
             margin-top: 100px;
             margin-bottom: 40px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
 
             .ms_card {
-                width: 80%;
-                min-height: 500px;
+                width: 90%;
+                min-height: 200px;
                 border: 1px solid black;
+                padding: 30px;
 
                 .invoice-number-style {
                     font-size: 30px;
@@ -84,14 +115,22 @@
                     margin-right: 10px;
                 }
 
-                .deliver-style {
+                .paid-style {
                     margin-bottom: 30px;
                 }
 
                 input {
                     width: 30%;
                 }
+
+                .installment-card {
+                    border: 1px solid green;
+                    border-radius: 15px;
+                    cursor: pointer;
+                }
             }
         }
+
+
     }
 </style>

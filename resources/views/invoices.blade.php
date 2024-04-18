@@ -9,13 +9,14 @@
     <table>
         <thead>
             <tr>
-                <th class="border border-dark">N. Fattura</th>
+                <th class="border border-dark">#</th>
                 <th class="border border-dark">Cliente</th>
                 <th class="border border-dark">Servizio</th>
                 <th class="border border-dark">Prezzo</th>
                 <th class="border border-dark">Venditore</th>
                 <th class="border border-dark">Erogatore</th>
                 <th class="border border-dark">Data fattura</th>
+                <th class="border border-dark">Pagata?</th>
             </tr>
         </thead>
         <tbody>
@@ -53,6 +54,7 @@
                     @endif
                 </td>
                 <td class="border border-dark">{{$invoice->invoice_date}}</td>
+                <td class="border border-dark">{{$invoice->paid ? 'Sì' : 'No'}}</td>
 
             </tr>
             @endforeach

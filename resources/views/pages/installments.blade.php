@@ -5,17 +5,9 @@
 @include('components.sidebar')
 <div class="main-content">
     <div class="container_macro">
-        <div class="invoice-container">
+        <div class="section-container">
             <div class="ms_card card">
-                <h2 class="mb-4">GESTIONE DELLE RATE</h2>
-
-                <ul>
-                    @foreach ($installments as $installment)
-                    <li>
-                        {{$installment->amount}}
-                    </li>
-                    @endforeach
-                </ul>
+                <span>siamo le rate della fattura n. {{$invoice->id}}</span>
             </div>
         </div>
     </div>
@@ -30,17 +22,20 @@
         display: flex;
         justify-content: center;
 
-        .invoice-container {
-            width: 80%;
+        .section-container {
+            width: 90%;
             margin-top: 100px;
             margin-bottom: 40px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
 
             .ms_card {
-                width: 80%;
-                min-height: 500px;
+                width: 90%;
+                min-height: 200px;
                 border: 1px solid black;
+                padding: 30px;
 
                 .invoice-number-style {
                     font-size: 30px;
@@ -48,10 +43,22 @@
                     margin-right: 10px;
                 }
 
-                .deliver-style {
+                .paid-style {
                     margin-bottom: 30px;
+                }
+
+                input {
+                    width: 30%;
+                }
+
+                .installment-card {
+                    border: 1px solid green;
+                    border-radius: 15px;
+                    cursor: pointer;
                 }
             }
         }
+
+
     }
 </style>
