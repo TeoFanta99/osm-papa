@@ -61,8 +61,18 @@ class InvoiceController extends Controller
         $invoice->paid = false;
 
         $invoice -> save();
+
+
+        // Creazione della nuova rata associata alla fattura
+        $installment = new Installment();
+        $installment->client_service_id = $invoice->id; // Assumendo che il campo di collegamento sia client_service_id
+        $installment->amount = $request->price; // Utilizza i dati del form per creare la rata
+        $installment->expire_date = $request->invoice_date;
+        $installment->paid = false;
+        // Altri campi della rata...
+        $installment->save();
         
-        return redirect() -> route('index.invoices', $invoice->id);
+        return redirect() -> route('index.invoices')->with('success', 'Fattura e rata create con successo!');
     }
 
     /**
