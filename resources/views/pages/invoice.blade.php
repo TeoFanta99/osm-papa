@@ -7,10 +7,11 @@
     <div class="container_macro">
         <div class="section-container">
             <div class="ms_card card">
-                <span class="invoice-number-style"><b>Fattura n. {{$invoice->id}}</b></span>
-                <span class="client-style">Cliente: {{$invoice->client->name}}</span>
+                <span class="invoice-number-style">N. fattura: <b>{{$invoice->id}}</b></span>
+                <span>Data fattura: {{$invoice->invoice_date}}</span>
+                <span class="client-style">Cliente: <b>{{$invoice->client->name}}</b></span>
                 <span class="service-style">Servizio: {{$invoice->service->name}}</span>
-                <span class="price-style">Prezzo:
+                <span class="price-style">Imponibile:
                     @if ($invoice->price)
                     {{$invoice->price}} €
                     @else
@@ -41,7 +42,7 @@
             </div>
 
             <div class="ms_card card">
-                <h3>RATE</h3>
+                <h3>RATE E PAGAMENTI</h3>
 
                 {{-- logica che mi conta il numero di rate associate a questo client_service_id --}}
                 @php
@@ -75,7 +76,7 @@
 
                 <div class="button_container">
                     <button class="ms_button">
-                        <a href="{{route('index.installments', $invoice->id)}}">GESTISCI RATEIZZAZIONE</a>
+                        <a href="{{route('index.installments', $invoice->id)}}">AGGIORNA</a>
                     </button>
                 </div>
             </div>
@@ -107,12 +108,6 @@
                 min-height: 200px;
                 border: 1px solid black;
                 padding: 30px;
-
-                .invoice-number-style {
-                    font-size: 30px;
-                    text-align-last: right;
-                    margin-right: 10px;
-                }
 
                 .paid-style {
                     margin-bottom: 30px;

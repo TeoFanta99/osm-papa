@@ -12,6 +12,11 @@ class ClientService extends Model
     // evito che laravel mi metta al plurale questa tabella
     protected $table = 'client_service';
 
+    protected $fillable = [
+        'paid',
+    ];
+
+
 
     public function installments()
     {

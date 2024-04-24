@@ -57,8 +57,9 @@ class InstallmentController extends Controller
         $installment->expire_date = $request->expire_date;
         $installment->paid = $request->paid;
         $installment->client_service_id = $clientServiceId;
+        
         $installment->save();
-
+        
         // Redirect alla pagina specifica della fattura
         return redirect()->route('show.invoice', $clientServiceId);
 
@@ -98,6 +99,9 @@ class InstallmentController extends Controller
         $invoice = ClientService::find($id);
         
         $installments = Installment::where('client_service_id', $invoice->id)->get();
+
+        // Flag per verificare se tutte le rate sono pagate
+        $allInstallmentsPaid = true;
         
         foreach ($installments as $installment) {
             $data = [
@@ -107,7 +111,22 @@ class InstallmentController extends Controller
             ];
             
             $installment->update($data);
+
+            // Controlla se la rata corrente è pagata
+            if (!$installment->paid) {
+                $allInstallmentsPaid = false;
+            }
         }
+
+        
+        // Se tutte le rate sono pagate, imposta 'paid' su 'true' per la fattura
+        if ($allInstallmentsPaid) {
+            $invoice->paid = true;
+        } else {
+            $invoice->paid = false;
+        }
+
+        $invoice->save();
         
         $invoiceID = $invoice->id;
 
