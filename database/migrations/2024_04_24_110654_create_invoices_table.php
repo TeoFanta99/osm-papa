@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('client_service', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 9, 2) ->nullable();
-            $table->decimal('customized_price', 9, 2) ->nullable();
-            $table->dateTime('invoice_date');
-            $table->string('sold_by');
-            $table->string('delivered_by');
-            $table->boolean('paid');
+            $table->decimal('price', 7, 2);
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_service');
+        Schema::dropIfExists('invoices');
     }
 };
