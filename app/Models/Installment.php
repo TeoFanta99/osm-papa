@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ClientService;
+use App\Models\Invoice;
 
 class Installment extends Model
 {
@@ -16,9 +16,9 @@ class Installment extends Model
         'paid',
     ];
 
-    public function client_service()
+    public function invoice()
     {
-        return $this -> belongsTo(ClientService :: class);
+        return $this -> belongsTo(Invoice :: class);
     }
     
 }

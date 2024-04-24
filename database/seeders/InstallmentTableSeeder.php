@@ -58,6 +58,6 @@ class InstallmentTableSeeder extends Seeder
 
     public function run()
     {
-        Installment :: factory() -> count(25) -> create();
+        Installment :: factory() -> count(100) -> create();
     }
 }

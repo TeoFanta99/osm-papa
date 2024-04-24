@@ -22,9 +22,13 @@ return new class extends Migration
             $table->foreignId('consultant_id')->constrained();
         });
 
-        // Schema::table('installments', function (Blueprint $table) {
-        //     $table->foreignId('invoice_id')->constrained('client_service');
-        // });
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->foreignId('client_id')->constrained();
+        });
+
+        Schema::table('installments', function (Blueprint $table) {
+            $table->foreignId('invoice_id')->constrained();
+        });
     }
 
     /**
@@ -46,10 +50,15 @@ return new class extends Migration
             $table->dropColumn(['consultant_id']);
         });
 
-        // Schema::table('installments', function (Blueprint $table) {
-        //     $table->dropForeign(['invoice_id']);
-        //     $table->dropColumn(['invoice_id']);
-        // });
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropForeign(['client_id']);
+            $table->dropColumn(['client_id']);
+        });
+
+        Schema::table('installments', function (Blueprint $table) {
+            $table->dropForeign(['invoice_id']);
+            $table->dropColumn(['invoice_id']);
+        });
 
 
     }

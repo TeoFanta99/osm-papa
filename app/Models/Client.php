@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Consultant;
 use App\Models\Service;
+use App\Models\Invoice;
 
 class Client extends Model
 {
@@ -21,8 +22,8 @@ class Client extends Model
         return $this -> belongsToMany(Service :: class);
     }
 
-    public function clientServices()
+    public function invoices()
     {
-        return $this -> hasMany(ClientService :: class);
+        return $this -> hasMany(Invoice :: class);
     }
 }
