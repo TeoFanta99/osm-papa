@@ -17,11 +17,11 @@ class InvoiceFactory extends Factory
     public function definition()
     {
         return [
-            'price' => fake() -> ,
-            'invoice_date' => fake() -> ,
-            'sold_by' => fake() -> ,
-            'paid' => fake() -> ,
-            'quantity' => fake() -> ,
+            'price' => fake() -> randomFloat(2, 100, 1000000),
+            'invoice_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
+            'sold_by' => $randomConsultant->name . $randomConsultant->lastname,
+            'paid' => fake() -> boolean(),
+            'quantity' => fake() -> randomDigit(),
         ];
     }
 }
