@@ -15,7 +15,11 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 7, 2);
+            $table->decimal('price', 9, 2) ->nullable();
+            $table->dateTime('invoice_date');
+            $table->string('sold_by');
+            $table->boolean('paid')->default(false);
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }
