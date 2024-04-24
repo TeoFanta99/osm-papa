@@ -23,11 +23,11 @@ return new class extends Migration
         });
 
         Schema::table('invoices', function (Blueprint $table) {
-            $table->foreignId('client_id')->constrained();
+            $table->foreignId('client_id')->constrained('clients');
         });
 
         Schema::table('installments', function (Blueprint $table) {
-            $table->foreignId('invoice_id')->constrained();
+            $table->foreignId('invoice_id')->nullable()->constrained('invoices'); // Modifica il campo e aggiungi il nuovo vincolo
         });
     }
 

@@ -24,7 +24,7 @@ class InstallmentFactory extends Factory
             'amount' => fake() -> randomFloat(2, 100, 1000000),
             'expire_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'paid' => fake() -> boolean(),
-            'invoice_id' => $invoice->id,
+            // 'invoice_id' => $invoice ? $invoice->id : null,
         ];
     }
 }

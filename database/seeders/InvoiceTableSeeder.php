@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Installment;
+use App\Models\Invoice;
 
 class InvoiceTableSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class InvoiceTableSeeder extends Seeder
      */
     public function run()
     {
-        Installment :: factory() -> count(50) -> create();
+        Invoice :: factory() -> count(50) -> create();
 
     }
 }
