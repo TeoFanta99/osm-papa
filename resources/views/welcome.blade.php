@@ -6,9 +6,9 @@
 <div class="main-content">
     @auth
     <div class="button_container">
-        <button class="ms_button">
-            <a href="{{route('create.newInvoice')}}">AGGIUNGI NUOVA FATTURA</a>
-        </button>
+        <a href="{{route('create.newInvoice')}}">
+            <button>NUOVA FATTURA</button>
+        </a>
     </div>
     @endauth
 </div>
@@ -19,13 +19,21 @@
     .button_container {
         margin: 30px;
 
-        button {
+        a {
             background-color: #4a6da7;
             padding: 20px;
+            text-decoration: none;
+            cursor: pointer;
 
-            a {
+            &:hover {
+                background-color: #35517e;
+            }
+
+            button {
+                background: none;
                 color: white;
-                text-decoration: none;
+                border: none;
+                cursor: pointer;
             }
         }
     }

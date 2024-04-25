@@ -18,9 +18,12 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice :: all();
+        // recupera le fatture e le ordina per id decrescente
+        $invoices = Invoice :: orderBy('id', 'desc')->get();
 
-        return view ('invoices', compact('invoices'));
+        $consultants = Consultant :: all();
+
+        return view ('invoices', compact('invoices', 'consultants'));
     }
 
     /**
