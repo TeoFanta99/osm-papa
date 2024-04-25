@@ -10,7 +10,7 @@
                 <span class="invoice-number-style">N. fattura: <b>{{$invoice->id}}</b></span>
                 <span>Data fattura: {{$invoice->invoice_date}}</span>
                 <span class="client-style">Cliente: <b>{{$invoice->client->name}}</b></span>
-                <span class="service-style">Servizio: {{$invoice->service->name}}</span>
+                {{-- <span class="service-style">Servizio: {{$invoice->service->name}}</span> --}}
                 <span class="price-style">Imponibile:
                     @if ($invoice->price)
                     {{$invoice->price}} €
@@ -18,7 +18,7 @@
                     <i>nessuno</i>
                     @endif
                 </span>
-                <span class="seller-style">Consulente Venditore:
+                {{-- <span class="seller-style">Consulente Venditore:
                     @php
                     $soldByConsultant = $consultants->where('id', $invoice->sold_by)->first();
                     @endphp
@@ -37,7 +37,7 @@
                     @else
                     Consulente non trovato
                     @endif
-                </span>
+                </span> --}}
                 <span class="paid-style">Fattura pagata interamente: {{$invoice->paid ? 'Sì' : 'No'}}</span>
             </div>
 

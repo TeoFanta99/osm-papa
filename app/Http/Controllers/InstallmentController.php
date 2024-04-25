@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Installment;
-use App\Models\ClientService;
+use App\Models\Invoice;
 
 class InstallmentController extends Controller
 {
@@ -15,9 +15,9 @@ class InstallmentController extends Controller
      */
     public function index($id)
     {
-        $invoice = ClientService::find($id);
+        $invoice = Invoice::find($id);
         $installment = Installment :: find($id);
-        $installments = Installment::where('client_service_id', $id)->get();
+        $installments = Installment::where('invoice_id', $id)->get();
 
         return view('pages.installments', compact('installments', 'invoice', 'installment'));
     }
@@ -45,23 +45,23 @@ class InstallmentController extends Controller
             'amount' => 'required|numeric',
             'expire_date' => 'required|date',
             'paid' => 'required|boolean',
-            'client_service_id' => 'required|numeric',
+            'invoice_id' => 'required|numeric',
         ]);
 
-        // recupera l'ID dell'invoice (client_service_id) dalla richiesta
-        $clientServiceId = $request->client_service_id;
+        // recupera l'ID dell'invoice (invoice_id) dalla richiesta
+        $invoiceID = $request->invoice_id;
 
         // crea nuova rata
         $installment = new Installment();
         $installment->amount = $request->amount;
         $installment->expire_date = $request->expire_date;
         $installment->paid = $request->paid;
-        $installment->client_service_id = $clientServiceId;
+        $installment->invoice_id = $invoiceID;
         
         $installment->save();
         
         // Redirect alla pagina specifica della fattura
-        return redirect()->route('show.invoice', $clientServiceId);
+        return redirect()->route('show.invoice', $invoiceID);
 
     }
 
@@ -96,9 +96,9 @@ class InstallmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $invoice = ClientService::find($id);
+        $invoice = Invoice::find($id);
         
-        $installments = Installment::where('client_service_id', $invoice->id)->get();
+        $installments = Installment::where('invoice_id', $invoice->id)->get();
 
         // Flag per verificare se tutte le rate sono pagate
         $allInstallmentsPaid = true;

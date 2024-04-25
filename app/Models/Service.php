@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Client;
+use App\Models\ServiceSold;
 
 class Service extends Model
 {
@@ -18,5 +19,10 @@ class Service extends Model
     public function clientServices()
     {
         return $this -> hasMany(ClientService :: class);
+    }
+
+    public function servicesSold()
+    {
+        return $this -> hasMany(ServiceSold :: class);
     }
 }

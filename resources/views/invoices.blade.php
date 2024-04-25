@@ -11,10 +11,10 @@
             <tr>
                 <th class="border border-dark">#</th>
                 <th class="border border-dark">Cliente</th>
-                <th class="border border-dark">Servizio</th>
+                {{-- <th class="border border-dark">Servizio</th> --}}
                 <th class="border border-dark">Prezzo</th>
-                <th class="border border-dark">Venditore</th>
-                <th class="border border-dark">Erogatore</th>
+                {{-- <th class="border border-dark">Venditore</th>
+                <th class="border border-dark">Erogatore</th> --}}
                 <th class="border border-dark">Data fattura</th>
                 <th class="border border-dark">Pagata?</th>
             </tr>
@@ -27,13 +27,13 @@
                     {{$invoice->id}}
                 </td>
                 <td class="border border-dark">{{$invoice->client->name}}</td>
-                <td class="border border-dark">{{$invoice->service->name}}</td>
+                {{-- <td class="border border-dark">{{$invoice->service->name}}</td> --}}
                 <td class="border border-dark">
                     @if ($invoice->price)
                     {{$invoice->price}} €
                     @endif
                 </td>
-                <td class="border border-dark">
+                {{-- <td class="border border-dark">
                     @php
                     $soldByConsultant = $consultants->where('id', $invoice->sold_by)->first();
                     @endphp
@@ -52,7 +52,7 @@
                     @else
                     Consulente non trovato
                     @endif
-                </td>
+                </td> --}}
                 <td class="border border-dark">{{$invoice->invoice_date}}</td>
                 <td class="border border-dark">{{$invoice->paid ? 'Sì' : 'No'}}</td>
 

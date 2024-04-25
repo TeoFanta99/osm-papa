@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Client;
 use App\Models\Installment;
+use App\Models\ServiceSold;
 
 class Invoice extends Model
 {
@@ -19,5 +20,10 @@ class Invoice extends Model
     public function installments()
     {
         return $this -> hasMany(Installment :: class);
+    }
+
+    public function servicesSold()
+    {
+        return $this -> hasMany(ServiceSold :: class);
     }
 }

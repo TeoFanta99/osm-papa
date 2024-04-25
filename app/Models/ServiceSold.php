@@ -5,26 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Invoice;
-use App\Models\InstallmentInfo;
+use App\Models\Service;
 
-class Installment extends Model
+class ServiceSold extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'amount', 
-        'expire_date',
-        'paid',
-    ];
+    protected $table = 'services_sold';
 
     public function invoice()
     {
         return $this -> belongsTo(Invoice :: class);
     }
 
-    public function installments_info()
+    public function service()
     {
-        return $this -> hasMany(InstallmentInfo :: class);
+        return $this -> belongsTo(Service :: class);
     }
-    
 }

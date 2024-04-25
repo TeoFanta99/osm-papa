@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\ServiceSold;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
@@ -20,11 +22,12 @@ class InvoiceFactory extends Factory
         $client = Client :: inRandomOrder()->first();
 
         return [
-            'price' => fake() -> randomFloat(2, 100, 1000000),
+            'price' => fake() -> randomFloat(2, 100, 1000),
             'invoice_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
-            'sold_by' => $client->consultant->name . $client->consultant->lastname,
+            'sold_by' => $client->consultant->name . ' ' . $client->consultant->lastname,
             'paid' => fake() -> boolean(),
             'quantity' => fake() -> randomDigit(),
+            'client_id' => $client->id,
         ];
     }
 }

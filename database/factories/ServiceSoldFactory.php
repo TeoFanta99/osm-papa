@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Invoice;
+use App\Models\Service;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class InstallmentFactory extends Factory
+class ServiceSoldFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,14 +18,14 @@ class InstallmentFactory extends Factory
      */
     public function definition()
     {
-
         $invoice = Invoice :: inRandomOrder() -> first();
+        $service = Service :: inRandomOrder() -> first();
 
         return [
-            'amount' => fake() -> randomFloat(2, 100, 1000000),
-            'expire_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
-            'paid' => fake() -> boolean(),
+            'price' => $service->price,
+            'issue_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'invoice_id' => $invoice->id,
+            'service_id' => $service->id,
         ];
     }
 }

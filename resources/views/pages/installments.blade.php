@@ -26,7 +26,7 @@
                         @csrf
                         @method("POST")
 
-                        <input type="hidden" name="client_service_id" value="{{ $invoice->id }}">
+                        <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
 
                         <label for="amount">Totale rata</label>
                         <input type="number" name="amount" id="amount">

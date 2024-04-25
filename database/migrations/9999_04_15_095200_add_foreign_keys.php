@@ -27,7 +27,16 @@ return new class extends Migration
         });
 
         Schema::table('installments', function (Blueprint $table) {
-            $table->foreignId('invoice_id')->nullable()->constrained('invoices'); // Modifica il campo e aggiungi il nuovo vincolo
+            $table->foreignId('invoice_id')->nullable()->constrained('invoices');
+        });
+
+        Schema::table('services_sold', function (Blueprint $table) {
+            $table->foreignId('invoice_id')->nullable()->constrained('invoices');
+            $table->foreignId('service_id')->nullable()->constrained('services');
+        });
+
+        Schema::table('installments_info', function (Blueprint $table) {
+            $table->foreignId('installment_id')->nullable()->constrained('installments');
         });
     }
 
@@ -59,7 +68,18 @@ return new class extends Migration
             $table->dropForeign(['invoice_id']);
             $table->dropColumn(['invoice_id']);
         });
+        
+        Schema::table('services_sold', function (Blueprint $table) {
+            $table->dropForeign(['invoice_id']);
+            $table->dropColumn(['invoice_id']);
+            $table->dropForeign(['service_id']);
+            $table->dropColumn(['service_id']);
+        });
 
+        Schema::table('installments_info', function (Blueprint $table) {
+            $table->dropForeign(['installment_id']);
+            $table->dropColumn(['installment_id']);
+        });
 
     }
 };
