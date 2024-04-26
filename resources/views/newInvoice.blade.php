@@ -22,7 +22,7 @@
             @endforeach
         </select><br><br>
         <label for="invoice_date">Data fattura</label><br>
-        <input type="date" name="invoice_date" id="invoice_date">
+        <input type="date" name="invoice_date" id="invoice_date" value="{{ date('Y-m-d') }}">
         <br><br><br><br><br>
 
         <button id="addServiceBtn">AGGIUNGI SERVIZIO</button><br><br>
@@ -41,7 +41,7 @@
                 <tbody class="d-block">
                     <tr>
                         <td class="border border-dark">
-                            <select name="service" id="service" onchange="updatePrice()"
+                            <select name="services[]" id="service" onchange="updatePrice()"
                                 style="background: white; border: 1px solid black; max-width: 500px; padding: 10px; border-radius: 5px">
                                 @foreach ($services as $service)
                                 <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service ->name}}
@@ -51,7 +51,7 @@
 
                         </td>
                         <td class="border border-dark">
-                            <input type="number" class="quantity" name="quantity" value="1" min="1"
+                            <input type="number" class="services_quantity" name="services_quantity" value="1" min="1"
                                 onchange="updatePrice()"
                                 style="max-width: 100px; padding: 10px; border: 1px solid black; border-radius: 5px">
                         </td>
@@ -84,8 +84,8 @@
     });
 
     function updateEvents() {
-        let serviceSelects = document.querySelectorAll('select[name="service"]');
-        let quantityInputs = document.querySelectorAll('.quantity');
+        let serviceSelects = document.querySelectorAll('select[name="services[]"]');
+        let quantityInputs = document.querySelectorAll('.services_quantity');
 
         // Aggiungi eventi per il cambio dell'opzione e della quantità
         serviceSelects.forEach(function(select) {
@@ -99,9 +99,9 @@
 
     function updatePrice() {
         let row = this.closest('tr');
-        let serviceSelect = row.querySelector('select[name="service"]');
+        let serviceSelect = row.querySelector('select[name="services[]"]');
         let selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-        let quantityInput = row.querySelector('.quantity');
+        let quantityInput = row.querySelector('.services_quantity');
         let priceInput = row.querySelector('.price');
 
         if (selectedOption) {

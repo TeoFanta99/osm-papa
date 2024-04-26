@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('installments', function (Blueprint $table) {
             $table->id();
-            $table->decimal('amount', 9, 2) ->nullable;
-            $table->dateTime('expire_date') ->nullable;
+            $table->decimal('amount', 9, 2) ->nullable();
+            $table->dateTime('expire_date') ->nullable();
             $table->boolean('paid');
             $table->timestamps();
         });

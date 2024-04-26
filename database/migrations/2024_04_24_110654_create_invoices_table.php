@@ -17,9 +17,8 @@ return new class extends Migration
             $table->id();
             $table->decimal('price', 9, 2) ->nullable();
             $table->dateTime('invoice_date')->nullable();
-            $table->string('sold_by');
             $table->boolean('paid')->default(false);
-            $table->integer('quantity')->default(1);
+            $table->integer('services_quantity')->default(1);
             $table->timestamps();
         });
     }
