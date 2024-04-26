@@ -24,48 +24,45 @@
         <label for="invoice_date">Data fattura</label><br>
         <input type="date" name="invoice_date" id="invoice_date">
         <br><br><br><br><br>
-        {{-- <label for="service">Servizio</label>
-        <br>
-        <select name="service" id="service">
-            @foreach ($services as $service)
-            <option value="{{$service->id}}" data-price="{{$service->price}} €">{{$service ->name}}</option>
-            @endforeach
-        </select>
-        <input type="text" id="price" name="price" value="{{$services[0]->price}} €"
-            style="border: 1px solid black; border-radius: 5px;">
-        <br><br> --}}
 
         <button id="addServiceBtn">AGGIUNGI SERVIZIO</button><br><br>
-        <table>
-            <thead>
-                <tr>
-                    <th class="border border-dark">Servizio</th>
-                    <th class="border border-dark">Quantità</th>
-                    <th class="border border-dark">Prezzo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="border border-dark">
-                        <select name="service" id="service" style="background: white; border: 1px solid black">
-                            @foreach ($services as $service)
-                            <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service ->name}}
-                            </option>
-                            @endforeach
-                        </select>
+        <div class="container">
+            <table class="table w-100">
+                <thead class="d-block">
+                    <tr>
+                        <th class="border border-dark" style="width: 500px; background: gray; color: white">Servizio
+                        </th>
+                        <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
+                        </th>
+                        <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo (€)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="d-block">
+                    <tr>
+                        <td class="border border-dark">
+                            <select name="service" id="service" onchange="updatePrice()"
+                                style="background: white; border: 1px solid black; max-width: 500px; padding: 10px; border-radius: 5px">
+                                @foreach ($services as $service)
+                                <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service ->name}}
+                                </option>
+                                @endforeach
+                            </select>
 
-                    </td>
-                    <td class="border border-dark">
-                        <input type="number" class="quantity" name="quantity" value="1" min="1"
-                            onchange="updatePrice(this)">
-                    </td>
-                    <td class="border border-dark">
-                        <input type="number" class="price" name="price" value="{{$services[0]->price}}"
-                            style="border: 1px solid black; border-radius: 5px;">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td class="border border-dark">
+                            <input type="number" class="quantity" name="quantity" value="1" min="1"
+                                onchange="updatePrice()"
+                                style="max-width: 100px; padding: 10px; border: 1px solid black; border-radius: 5px">
+                        </td>
+                        <td class="border border-dark">
+                            <input type="number" class="price" name="price" value="{{$services[0]->price}}" step="0.01"
+                                style="border: 1px solid black; border-radius: 5px; max-width: 150px; padding: 10px">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <br><br><br>
         <input class="create-btn" type="submit" value="Crea">
     </form>
@@ -76,39 +73,54 @@
 {{-- pusha lo script fino all'app.blade, che se lo recupererà con @stack --}}
 @push('scripts')
 <script>
-    // document.getElementById('service').addEventListener('change', function() {
-    //     let selectedOption = this.options[this.selectedIndex];
-    //     let price = selectedOption.getAttribute('data-price');
-    //     document.getElementById('price').value = price;
-    // });
-
     document.getElementById('addServiceBtn').addEventListener('click', function(event) {
         event.preventDefault();
         let table = document.querySelector('table');
         let tbody = table.querySelector('tbody');
         let clone = tbody.rows[0].cloneNode(true);
         tbody.appendChild(clone);
+
+        updateEvents();
     });
 
-    document.querySelectorAll('.quantity').forEach(input => {
-        input.addEventListener('change', function() {
-            let selectedOption = this.parentNode.previousElementSibling.querySelector('option:checked');
-            updatePrice(selectedOption);
+    function updateEvents() {
+        let serviceSelects = document.querySelectorAll('select[name="service"]');
+        let quantityInputs = document.querySelectorAll('.quantity');
+
+        // Aggiungi eventi per il cambio dell'opzione e della quantità
+        serviceSelects.forEach(function(select) {
+            select.addEventListener('change', updatePrice);
         });
-    });
 
-    function updatePrice(selectedOption) {
-        let quantityInput = document.querySelector('.quantity');
-        let quantity = quantityInput.value;
+        quantityInputs.forEach(function(input) {
+            input.addEventListener('input', updatePrice);
+        });
+    }
+
+    function updatePrice() {
+        let row = this.closest('tr');
+        let serviceSelect = row.querySelector('select[name="service"]');
+        let selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+        let quantityInput = row.querySelector('.quantity');
+        let priceInput = row.querySelector('.price');
 
         if (selectedOption) {
-            let price = selectedOption.getAttribute('data-price');
+
+            let price = parseFloat(selectedOption.getAttribute('data-price'));
+
+            let quantity = parseInt(quantityInput.value);
+
             let totalPrice = quantity * price;
 
-            // Imposta il valore direttamente nell'input del prezzo
-            quantityInput.parentNode.nextElementSibling.querySelector('.price').value = totalPrice;
+            priceInput.value = price;
+
+            if (!isNaN(totalPrice)) {
+                priceInput.value = totalPrice;
+            }
         }
     }
+
+    updateEvents();
 </script>
 @endpush
 
@@ -133,15 +145,5 @@
 
     #addServiceBtn:hover {
         background-color: #35517e;
-    }
-
-    th {
-        padding: 12px 20px;
-        background-color: gray;
-        color: white;
-    }
-
-    td {
-        padding: 15px;
     }
 </style>
