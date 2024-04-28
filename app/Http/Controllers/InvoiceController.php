@@ -49,61 +49,53 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request -> all();
-        // Creazione della nuova fattura
+        $data = $request->all();
+
+        $totalQuantity = 0;
+        $totalPrice = 0;
+
+        // recupero i dati del cliente e del consulente di riferimento
+
+        // crea nuova fattura
         $invoice = new Invoice();
         $invoice -> client_id = $data['client'];
+        $invoice -> invoice_date = $request -> invoice_date;
+        $invoice -> paid = false;
         $invoice -> save();
 
-        
-        $totalPrice = 0;
-        $serviceQuantities = [];
 
-        // Ciclo sui servizi venduti per creare i ServiceSold
-        foreach ($request->services as $serviceId) {
 
-            $totalQuantity = 0;
+        // ciclo foreach per ogni row di servizi presente
+        foreach ($request->services_quantity as $index => $quantity) {
 
-            // Aggiorna il totale delle quantità
-            $totalQuantity += $data['services_quantity'];
+            $pricePerUnit = $request -> price[$index] / $quantity;
 
-            // Trova il servizio dal suo ID
-            $serviceModel = Service :: find($serviceId);
+            for ($i = 0; $i < $quantity; $i++) {
 
-            // valore dell'input 'price'
-            $price = $data['price'];
-
-            // Calcola il prezzo per ServiceSold
-            $pricePerUnit = $price / $totalQuantity;
-            
-
-            // Crea un record ServiceSold per ogni servizio venduto
-            for ($i = 0; $i < $totalQuantity; $i++) {
                 $serviceSold = new ServiceSold();
+                $serviceSold->service_id = $request->service_id[$index];
                 $serviceSold->invoice_id = $invoice->id;
-                $serviceSold->service_id = $serviceModel->id;
                 $serviceSold->price = $pricePerUnit;
-                $serviceSold->issue_date = $data['invoice_date'];
+                $serviceSold->issue_date = $request->invoice_date;
                 $serviceSold->save();
 
-                // aggiorna il prezzo sommando tutti i serviceSold
                 $totalPrice += $pricePerUnit;
             }
-        }
-        // Aggiorna la quantità totale nell'invoice
-        $invoice->services_quantity = $totalQuantity;
 
-        // aggiorna il valore 'price' della invoice
+            $totalQuantity += $quantity;
+
+        }
+
+        $invoice->services_quantity = $totalQuantity;
         $invoice->price = $totalPrice;
-        // dd($totalQuantity);
         $invoice->save();
-        
+
 
 
         // Creazione della nuova rata associata alla fattura
         $installment = new Installment();
         $installment->invoice_id = $invoice->id; 
-        $installment->amount = $request->price; 
+        $installment->amount = $invoice -> price; 
         $installment->expire_date = $request->invoice_date;
         $installment->paid = false;
         $installment->save();
@@ -121,8 +113,14 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice :: find($id);
         $installments = Installment :: where ('invoice_id', $invoice->id) -> get();
+        $servicesSold = ServiceSold :: where ('invoice_id', $invoice->id) -> get();
+        $consultants = Consultant :: all();
+        
+        $client = $invoice->client;
+        $consultant_id = $client ? $client->consultant_id : null;
+        $services = Service :: all();
 
-        return view ('pages.invoice', compact('invoice', 'installments'));
+        return view ('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'services', 'client', 'consultants', 'consultant_id'));
     }
 
     /**

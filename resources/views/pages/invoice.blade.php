@@ -10,35 +10,75 @@
                 <span class="invoice-number-style">N. fattura: <b>{{$invoice->id}}</b></span>
                 <span>Data fattura: {{$invoice->invoice_date}}</span>
                 <span class="client-style">Cliente: <b>{{$invoice->client->name}}</b></span>
-                {{-- <span class="service-style">Servizio: {{$invoice->service->name}}</span> --}}
+                <span class="seller-style mb-5">Consulente di riferimento:
+                    {{$invoice->client->consultant->name}} {{$invoice->client->consultant->lastname}}
+                </span>
+                <table class="table w-100 mb-5">
+                    <thead>
+                        <tr>
+                            <th class="border border-dark" style="width: 400px; background: gray; color: white">Servizio
+                            </th>
+                            <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
+                            </th>
+                            <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
+                                unitario
+                                (€)
+                            </th>
+                            <th class="border border-dark" style="width: 200px; background: gray; color: white">Erogato
+                                da
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="services-container">
+                        @php
+                        $groupedServices = $servicesSold->groupBy(function($item) {
+                        return $item->service_id . '_' . $item->price;
+                        });
+                        @endphp
+                        @foreach ($groupedServices as $group)
+                        <tr class="service-row">
+                            <td class="border border-dark">
+                                {{$group[0]->service->name}}
+                            </td>
+                            <td class="border border-dark">
+                                {{$group->count()}}
+                            </td>
+                            <td class="border border-dark">
+                                {{$group[0]->price}}
+                            </td>
+                            <td class="border border-dark">
+                                <select name="delivered_by" id="delivered_by">
+                                    @foreach ($consultants as $consultant)
+                                    <option value="{{$consultant->id}}" @if($consultant->id == $consultant_id) selected
+                                        @endif>
+                                        {{$consultant->name}} {{$consultant->lastname}}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+                {{-- Prezzo fattura --}}
+                @php
+                $imponibile = isset($invoice->price) ? number_format(floatval($invoice->price), 2, '.', '') : 0;
+                $iva = number_format(floatval($imponibile * 0.22), 2, '.', '');
+                $totaleFattura = number_format(floatval($imponibile) + floatval($iva), 2, '.', '');
+                @endphp
                 <span class="price-style">Imponibile:
-                    @if ($invoice->price)
-                    {{$invoice->price}} €
-                    @else
-                    <i>nessuno</i>
-                    @endif
+                    {{$imponibile}} €
                 </span>
-                {{-- <span class="seller-style">Consulente Venditore:
-                    @php
-                    $soldByConsultant = $consultants->where('id', $invoice->sold_by)->first();
-                    @endphp
-                    @if ($soldByConsultant)
-                    {{$soldByConsultant->name}} {{$soldByConsultant->lastname}}
-                    @else
-                    Consulente non trovato
-                    @endif
+                <span>IVA:
+                    {{$iva}} €
                 </span>
-                <span class="deliver-style">Consulente Erogatore:
-                    @php
-                    $deliveredByConsultant = $consultants->where('id', $invoice->delivered_by)->first();
-                    @endphp
-                    @if ($deliveredByConsultant)
-                    {{$deliveredByConsultant->name}} {{$deliveredByConsultant->lastname}}
-                    @else
-                    Consulente non trovato
-                    @endif
-                </span> --}}
-                <span class="paid-style">Fattura pagata interamente: {{$invoice->paid ? 'Sì' : 'No'}}</span>
+                <span>
+                    Totale fattura:
+                    {{$totaleFattura}} €
+                </span>
+                <span class="paid-style mt-3">Fattura pagata interamente: {{$invoice->paid ? 'Sì' : 'No'}}</span>
             </div>
 
             <div class="ms_card card">
@@ -124,7 +164,5 @@
                 }
             }
         }
-
-
     }
 </style>

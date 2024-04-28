@@ -14,7 +14,6 @@
         <br>
         <select name="client" id="client">
             @php
-            // Ordina i clienti per nome crescente
             $clients = $clients->sortBy('name');
             @endphp
             @foreach ($clients as $client)
@@ -25,7 +24,8 @@
         <input type="date" name="invoice_date" id="invoice_date" value="{{ date('Y-m-d') }}">
         <br><br><br><br><br>
 
-        <button id="addServiceBtn">AGGIUNGI SERVIZIO</button><br><br>
+
+        <button type="button" id="addServiceBtn" onclick="addServiceRow()">AGGIUNGI SERVIZIO</button><br><br>
         <div class="container">
             <table class="table w-100">
                 <thead class="d-block">
@@ -34,30 +34,30 @@
                         </th>
                         <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
                         </th>
-                        <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo (€)
+                        <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
+                            (€)
                         </th>
                     </tr>
                 </thead>
-                <tbody class="d-block">
-                    <tr>
+                <tbody class="services-container d-block">
+                    <tr class="service-row">
                         <td class="border border-dark">
-                            <select name="services[]" id="service" onchange="updatePrice()"
-                                style="background: white; border: 1px solid black; max-width: 500px; padding: 10px; border-radius: 5px">
+                            <select class="service-select" name="service_id[]" onchange="updatePrice(this)">
                                 @foreach ($services as $service)
-                                <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service ->name}}
+                                <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}
                                 </option>
                                 @endforeach
                             </select>
-
                         </td>
                         <td class="border border-dark">
-                            <input type="number" class="services_quantity" name="services_quantity" value="1" min="1"
-                                onchange="updatePrice()"
-                                style="max-width: 100px; padding: 10px; border: 1px solid black; border-radius: 5px">
+                            <input type="hidden" class="service-price" name="services_price[]"
+                                value="{{$service->price}}">
+                            <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
+                                onchange="updatePrice(this)">
                         </td>
                         <td class="border border-dark">
-                            <input type="number" class="price" name="price" value="{{$services[0]->price}}" step="0.01"
-                                style="border: 1px solid black; border-radius: 5px; max-width: 150px; padding: 10px">
+                            <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}"
+                                step="0.01">
                         </td>
                     </tr>
                 </tbody>
@@ -72,55 +72,58 @@
 
 {{-- pusha lo script fino all'app.blade, che se lo recupererà con @stack --}}
 @push('scripts')
+
 <script>
-    document.getElementById('addServiceBtn').addEventListener('click', function(event) {
-        event.preventDefault();
-        let table = document.querySelector('table');
-        let tbody = table.querySelector('tbody');
-        let clone = tbody.rows[0].cloneNode(true);
-        tbody.appendChild(clone);
+    let serviceIndex = 1;
+    
+    function addServiceRow() {
+        let newRow = document.createElement('tr');
+        newRow.classList.add('service-row');
 
-        updateEvents();
-    });
+        newRow.innerHTML = `
+            <td class="border border-dark">
+                <select class="service-select" name="service_id[${serviceIndex}]" onchange="updatePrice(this)">
+                    @foreach ($services as $service)
+                    <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}</option>
+                    @endforeach
+                </select>
+            </td>
+            <td class="border border-dark">
+                <input type="hidden" class="service-price" name="services_price[${serviceIndex}]" value="{{$service->price}}">
+                <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1" onchange="updatePrice(this)">
+            </td>
+            <td class="border border-dark">
+                <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}" step="0.01">
+            </td>`;
 
-    function updateEvents() {
-        let serviceSelects = document.querySelectorAll('select[name="services[]"]');
-        let quantityInputs = document.querySelectorAll('.services_quantity');
-
-        // Aggiungi eventi per il cambio dell'opzione e della quantità
-        serviceSelects.forEach(function(select) {
-            select.addEventListener('change', updatePrice);
-        });
-
-        quantityInputs.forEach(function(input) {
-            input.addEventListener('input', updatePrice);
-        });
+        document.querySelector('.services-container').appendChild(newRow);
+        serviceIndex++;
     }
 
-    function updatePrice() {
-        let row = this.closest('tr');
-        let serviceSelect = row.querySelector('select[name="services[]"]');
+    function updatePrice(element) {
+        let row = element.closest('.service-row');
+        let serviceSelect = row.querySelector('.service-select');
         let selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
         let quantityInput = row.querySelector('.services_quantity');
-        let priceInput = row.querySelector('.price');
+        let priceInput = row.querySelector('.price-input');
 
         if (selectedOption) {
-
             let price = parseFloat(selectedOption.getAttribute('data-price'));
-
             let quantity = parseInt(quantityInput.value);
-
             let totalPrice = quantity * price;
-
-            priceInput.value = price;
 
             if (!isNaN(totalPrice)) {
                 priceInput.value = totalPrice;
+            } else {
+                priceInput.value = 0;
             }
+
+            let serviceId = selectedOption.value;
+            console.log('Service ID:', serviceId);
         }
     }
 
-    updateEvents();
+    console.log();
 </script>
 @endpush
 
@@ -146,4 +149,28 @@
     #addServiceBtn:hover {
         background-color: #35517e;
     }
+
+    .service-select {
+        background: white;
+        border: 1px solid black;
+        max-width: 500px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .price-input {
+        border: 1px solid black;
+        border-radius: 5px;
+        max-width: 150px;
+        padding: 10px;
+    }
+
+    .services_quantity {
+        max-width: 100px;
+        padding: 10px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+    th {}
 </style>
