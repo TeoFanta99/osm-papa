@@ -10,51 +10,71 @@
         <thead>
             <tr>
                 <th class="border border-dark">#</th>
-                <th class="border border-dark">Cliente</th>
-                {{-- <th class="border border-dark">Servizio</th> --}}
-                <th class="border border-dark">Prezzo</th>
-                {{-- <th class="border border-dark">Venditore</th>
-                <th class="border border-dark">Erogatore</th> --}}
                 <th class="border border-dark">Data fattura</th>
-                <th class="border border-dark">Pagata?</th>
+                <th class="border border-dark">Cliente</th>
+                <th class="border border-dark">Consulente</th>
+                <th class="border border-dark">Servizi</th>
+                <th class="border border-dark">Imponibile</th>
+                <th class="border border-dark">Iva</th>
+                <th class="border border-dark">Tot. Fattura</th>
+                <th class="border border-dark">Rate</th>
+                <th class="border border-dark">Stato</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($invoices as $invoice)
 
+            {{-- CALCOLO IMPONIBILE, IVA E TOTALE FATTURA --}}
+            @php
+            $imponibile = isset($invoice->price) ? number_format(floatval($invoice->price), 2, '.', '') : 0;
+            $iva = number_format(floatval($imponibile * 0.22), 2, '.', '');
+            $totaleFattura = number_format(floatval($imponibile) + floatval($iva), 2, '.', '');
+            @endphp
+
+
+            {{-- CONTEGGIO RATE --}}
+            @php
+            $clientServiceId = $invoice->client_service_id;
+            $installmentsCount = $invoice->installments()->count();
+            @endphp
+
             <tr class="clickable-row" data-href="{{route('show.invoice', $invoice -> id)}}">
                 <td class="border border-dark">
                     {{$invoice->id}}
                 </td>
+                <td class="border border-dark">{{ date('d-m-Y',
+                    strtotime($invoice->invoice_date))}}</td>
+
                 <td class="border border-dark">{{$invoice->client->name}}</td>
-                {{-- <td class="border border-dark">{{$invoice->service->name}}</td> --}}
+                <td class="border border-dark">{{$invoice->client->consultant->name}}
+                    {{$invoice->client->consultant->lastname}}</td>
                 <td class="border border-dark">
-                    @if ($invoice->price)
-                    {{$invoice->price}} €
-                    @endif
-                </td>
-                {{-- <td class="border border-dark">
+
+                    {{-- LOGICA PER RAGGRUPPARE I SERVICESOLD IN BASE AL SERVIZIO VENDUTO --}}
                     @php
-                    $soldByConsultant = $consultants->where('id', $invoice->sold_by)->first();
+                    $groupedServices = $servicesSold->where('invoice_id', $invoice->id)->groupBy('service_id');
+                    $countedServices = $groupedServices->map(function ($services) {
+                    return [
+                    'name' => $services->first()->service->name,
+                    'count' => $services->count()
+                    ];
+                    });
                     @endphp
-                    @if ($soldByConsultant)
-                    {{$soldByConsultant->name}} {{$soldByConsultant->lastname}}
-                    @else
-                    Consulente non trovato
+
+                    @foreach ($countedServices as $service)
+                    @if ($service['count'] >0)
+                    <li>{{ $service['count'] }}x {{ $service['name'] }}</li>
                     @endif
+                    @endforeach
                 </td>
+
                 <td class="border border-dark">
-                    @php
-                    $deliveredByConsultant = $consultants->where('id', $invoice->delivered_by)->first();
-                    @endphp
-                    @if ($deliveredByConsultant)
-                    {{$deliveredByConsultant->name}} {{$deliveredByConsultant->lastname}}
-                    @else
-                    Consulente non trovato
-                    @endif
-                </td> --}}
-                <td class="border border-dark">{{$invoice->invoice_date}}</td>
-                <td class="border border-dark">{{$invoice->paid ? 'Sì' : 'No'}}</td>
+                    {{$imponibile}} €
+                </td>
+                <td class="border border-dark">{{$iva}} €</td>
+                <td class="border border-dark">{{$totaleFattura}} €</td>
+                <td class="border border-dark">{{ $installmentsCount }}</td>
+                <td class="border border-dark">{{$invoice->paid ? 'Pagata' : 'Non pagata'}}</td>
 
             </tr>
             @endforeach

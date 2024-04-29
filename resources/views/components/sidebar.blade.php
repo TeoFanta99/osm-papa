@@ -27,7 +27,7 @@
     <div class="ms_btn purchases-btn">
         <a href="{{route('index.invoices')}}">
             <i class="fa-solid fa-credit-card"></i>
-            <span>Fatture/Pagamenti</span>
+            <span>Pagamenti</span>
         </a>
     </div>
     <div class="ms_btn stats-btn">

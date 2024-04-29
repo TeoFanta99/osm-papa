@@ -24,7 +24,9 @@ class InvoiceController extends Controller
 
         $consultants = Consultant :: all();
 
-        return view ('invoices', compact('invoices', 'consultants'));
+        $servicesSold = ServiceSold :: all();
+
+        return view ('invoices', compact('invoices', 'consultants','servicesSold'));
     }
 
     /**
