@@ -11,7 +11,7 @@
             <tr>
                 <th class="border border-dark">#</th>
                 <th class="border border-dark">Data fattura</th>
-                <th class="border border-dark">Cliente</th>
+                <th class="border border-dark" style="max-width: 100px">Cliente</th>
                 <th class="border border-dark">Consulente</th>
                 <th class="border border-dark">Servizi</th>
                 <th class="border border-dark">Imponibile</th>
@@ -45,7 +45,7 @@
                 <td class="border border-dark">{{ date('d-m-Y',
                     strtotime($invoice->invoice_date))}}</td>
 
-                <td class="border border-dark">{{$invoice->client->name}}</td>
+                <td class="border border-dark" style="max-width: 100px">{{$invoice->client->name}}</td>
                 <td class="border border-dark">{{$invoice->client->consultant->name}}
                     {{$invoice->client->consultant->lastname}}</td>
                 <td class="border border-dark">
