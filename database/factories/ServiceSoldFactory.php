@@ -28,7 +28,7 @@ class ServiceSoldFactory extends Factory
             'issue_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'invoice_id' => $invoice->id,
             'service_id' => $service->id,
-            'delivered_by' => $consultant->id,
+            'delivered_by' => $invoice->client->consultant,
         ];
     }
 }

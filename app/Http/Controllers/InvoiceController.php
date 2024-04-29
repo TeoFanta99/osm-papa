@@ -63,7 +63,7 @@ class InvoiceController extends Controller
         $invoice -> paid = false;
         $invoice -> save();
 
-
+        $consultantId = $invoice->client->consultant_id;
 
         // ciclo foreach per ogni row di servizi presente
         foreach ($request->services_quantity as $index => $quantity) {
@@ -77,6 +77,7 @@ class InvoiceController extends Controller
                 $serviceSold->invoice_id = $invoice->id;
                 $serviceSold->price = $pricePerUnit;
                 $serviceSold->issue_date = $request->invoice_date;
+                $serviceSold->delivered_by = $consultantId;
                 $serviceSold->save();
 
                 $totalPrice += $pricePerUnit;

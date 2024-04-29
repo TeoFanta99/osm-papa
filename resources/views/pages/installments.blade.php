@@ -7,20 +7,9 @@
     <div class="container_macro">
         <div class="section-container">
             <div class="ms_card card">
-                <h3>Cosa vuoi fare?</h3>
+                <h3>Crea una nuova rata</h3>
 
-                <div class="button_container mb-4">
-                    <button class="ms_button" id="edit_installment_btn" onclick="showEditInstallmentForm()">Aggiorna
-                        pagamenti / Modifica
-                        rate</button>
-                    <button class="ms_button" id="new_installment_btn" onclick="showNewInstallmentForm()">Crea una nuova
-                        rata</button>
-                    <button class="ms_button">
-                        <a href="{{route('show.invoice', $invoice->id)}}">TORNA INDIETRO</a>
-                    </button>
-                </div>
-
-                <div id="new_installment_form" style="display: none">
+                <div id="new_installment_form">
                     <form method="POST" action="{{route('store.installments')}}" enctype="multipart/form-data">
 
                         @csrf
@@ -47,36 +36,12 @@
                     </form>
                 </div>
 
-                <form action="{{route('update.installments', $installment)}}" method="POST" id="edit_installment_form"
-                    style="display: none;" class="mb-4">
-                    @csrf
-                    @method('PUT')
 
-                    @if($installments->isEmpty())
-                    <span><b>NESSUNA RATA DISPONIBILE</b></span>
+                <button class="ms_button" style="max-width: 150px">
+                    <a href="{{route('show.invoice', $invoice->id)}}">TORNA INDIETRO</a>
+                </button>
 
-                    @else
-                    @foreach ($installments as $installment)
-                    <label for="amount_{{ $installment->id }}">Totale rata: </label>
-                    <input type="number" name="amount_{{ $installment->id }}" id="amount_{{ $installment->id }}"
-                        value="{{$installment->amount}}">
-                    <br>
-                    <label for="expire_date_{{ $installment->id }}">Data di scadenza: </label>
-                    <input type="date" name="expire_date_{{ $installment->id }}" id="expire_date_{{ $installment->id }}"
-                        value="{{ date('Y-m-d', strtotime($installment->expire_date)) }}">
-                    <br>
-                    <label for="paid_{{ $installment->id }}">È stata pagata? </label>
-                    <select name="paid_{{ $installment->id }}" id="paid_{{ $installment->id }}">
-                        <option value="0" {{ $installment->paid == 0 ? 'selected' : '' }}>No</option>
-                        <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Sì</option>
-                    </select>
-                    <br><br><br>
 
-                    @endforeach
-                    <input type="submit" value="SALVA">
-                    @endif
-
-                </form>
 
             </div>
         </div>
@@ -85,27 +50,7 @@
 
 @endsection
 
-@push('scripts')
-<script>
-    function showNewInstallmentForm() {
-    let newInstallmentForm = document.getElementById('new_installment_form');
-    let editInstallmentForm = document.getElementById('edit_installment_form');
 
-    newInstallmentForm.style.display = 'block';
-    editInstallmentForm.style.display = 'none';
-    }
-
-    function showEditInstallmentForm() {
-    let newInstallmentForm = document.getElementById('new_installment_form');
-    let editInstallmentForm = document.getElementById('edit_installment_form');
-
-    newInstallmentForm.style.display = 'none';
-    editInstallmentForm.style.display = 'block';
-    }
-
-
-</script>
-@endpush
 
 <style scoped lang="scss">
     .container_macro {

@@ -96,41 +96,21 @@ class InstallmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $invoice = Invoice::find($id);
-        
-        $installments = Installment::where('invoice_id', $invoice->id)->get();
+        $installmentsData = $request->input('installments');
 
-        // Flag per verificare se tutte le rate sono pagate
-        $allInstallmentsPaid = true;
-        
-        foreach ($installments as $installment) {
-            $data = [
-                'amount' => $request->input('amount_' . $installment->id),
-                'expire_date' => $request->input('expire_date_' . $installment->id),
-                'paid' => $request->input('paid_' . $installment->id),
-            ];
-            
-            $installment->update($data);
+        foreach ($installmentsData as $installmentId => $data) {
+        $installment = Installment::findOrFail($installmentId);
 
-            // Controlla se la rata corrente è pagata
-            if (!$installment->paid) {
-                $allInstallmentsPaid = false;
-            }
+            $installment->update([
+                'amount' => $data['amount'],
+                'expire_date' => $data['expire_date'],
+                'paid' => $data['paid'],
+            ]);
         }
 
-        
-        // Se tutte le rate sono pagate, imposta 'paid' su 'true' per la fattura
-        if ($allInstallmentsPaid) {
-            $invoice->paid = true;
-        } else {
-            $invoice->paid = false;
-        }
+        $invoice = Invoice::findOrFail($id);
 
-        $invoice->save();
-        
-        $invoiceID = $invoice->id;
-
-        return redirect()->route('show.invoice', $invoiceID);
+        return redirect()->route('show.invoice', $invoice->id);
     }
 
 
