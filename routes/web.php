@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/consultants', [ConsultantController :: class, 'index']) -> name('index.consultants');
     Route::get('/clients', [ClientController :: class, 'index']) -> name('index.clients');
     Route::get('/invoices', [InvoiceController :: class, 'index']) -> name('index.invoices');
+    Route::get('/consultant/{id}', [ConsultantController :: class, 'show']) -> name('show.consultant');
 
     Route::get('/create-newInvoice', [InvoiceController :: class, 'create']) -> name('create.newInvoice');
     Route::get('/edit-installments/{clientServiceId}/edit', [InstallmentController :: class, 'edit']) -> name('edit.installments');

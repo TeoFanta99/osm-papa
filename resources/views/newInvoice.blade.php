@@ -25,44 +25,43 @@
         <br><br><br><br><br>
 
 
-        <button type="button" id="addServiceBtn" onclick="addServiceRow()">AGGIUNGI SERVIZIO</button><br><br>
-        <div class="container">
-            <table class="table w-100">
-                <thead class="d-block">
-                    <tr>
-                        <th class="border border-dark" style="width: 500px; background: gray; color: white">Servizio
-                        </th>
-                        <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
-                        </th>
-                        <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
-                            (€)
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="services-container d-block">
-                    <tr class="service-row">
-                        <td class="border border-dark">
-                            <select class="service-select" name="service_id[]" onchange="updatePrice(this)">
-                                @foreach ($services as $service)
-                                <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td class="border border-dark">
-                            <input type="hidden" class="service-price" name="services_price[]"
-                                value="{{$service->price}}">
-                            <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
-                                onchange="updatePrice(this)">
-                        </td>
-                        <td class="border border-dark">
-                            <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}"
-                                step="0.01">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <button type="button" id="addServiceBtn" onclick="addServiceRow()">Aggiungi</button><br><br>
+
+        <table class="table w-100">
+            <thead class="d-block">
+                <tr>
+                    <th class="border border-dark" style="width: 500px; background: gray; color: white">Servizio
+                    </th>
+                    <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
+                    </th>
+                    <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
+                        (€)
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="services-container d-block">
+                <tr class="service-row">
+                    <td class="border border-dark">
+                        <select class="service-select" name="service_id[]" onchange="updatePrice(this)">
+                            @foreach ($services as $service)
+                            <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td class="border border-dark">
+                        <input type="hidden" class="service-price" name="services_price[]" value="{{$service->price}}">
+                        <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
+                            onchange="updatePrice(this)">
+                    </td>
+                    <td class="border border-dark">
+                        <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}"
+                            step="0.01">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
         <br><br><br>
         <input class="create-btn" type="submit" value="Crea">
     </form>
@@ -135,15 +134,22 @@
 
     .create-btn {
         padding: 20px 50px;
+        background-color: rgb(28, 192, 28);
+        border: none;
+        color: white;
+    }
+
+    .create-btn:hover {
+        background-color: rgb(97, 255, 97);
     }
 
     #addServiceBtn {
         background-color: #4a6da7;
-        padding: 10px;
+        padding: 5px 15px;
         color: white;
         cursor: pointer;
         border: none;
-        font-size: 13px;
+        /* font-size: 25px; */
     }
 
     #addServiceBtn:hover {

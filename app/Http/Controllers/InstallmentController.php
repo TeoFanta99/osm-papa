@@ -19,7 +19,7 @@ class InstallmentController extends Controller
         $installment = Installment :: find($id);
         $installments = Installment::where('invoice_id', $id)->get();
 
-        return view('pages.installments', compact('installments', 'invoice', 'installment'));
+        return view('pages.createInstallments', compact('installments', 'invoice', 'installment'));
     }
 
     /**

@@ -19,16 +19,17 @@ class ServiceSoldFactory extends Factory
      */
     public function definition()
     {
+        $consultant = Consultant :: inRandomOrder() -> first();
         $invoice = Invoice :: inRandomOrder() -> first();
         $service = Service :: inRandomOrder() -> first();
-        $consultant = Consultant :: inRandomOrder() -> first();
+        
 
         return [
             'price' => $service->price,
             'issue_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'invoice_id' => $invoice->id,
             'service_id' => $service->id,
-            'delivered_by' => $invoice->client->consultant,
+            'delivered_by' => $consultant->id,
         ];
     }
 }

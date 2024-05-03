@@ -48,5 +48,5 @@
 </div>
 
 <style>
-    /* @import url("{{ asset('scss/app.scss') }}"); */
+    @import url("{{ asset('scss/app.scss') }}");
 </style>

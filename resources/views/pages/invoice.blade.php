@@ -6,54 +6,24 @@
 <div class="main-content">
     <div class="container_macro">
         <div class="section-container">
-            <div class="ms_card card">
-                {{-- <div class="d-flex w-100">
-                    <div class="d-flex flex-column w-50">
-                        <span class="invoice-number-style">N. fattura: <b>{{$invoice->id}}</b></span>
-                        <span>Data fattura: {{$invoice->invoice_date}}</span>
-                        <span class="client-style">Cliente: <b>{{$invoice->client->name}}</b></span>
-                        <span class="seller-style mb-3">Consulente di riferimento:
-                            {{$invoice->client->consultant->name}} {{$invoice->client->consultant->lastname}}
-                        </span>
-                    </div>
-                    <div class="d-flex flex-column w-50">
-                        @php
-                        $imponibile = isset($invoice->price) ? number_format(floatval($invoice->price), 2, '.', '') : 0;
-                        $iva = number_format(floatval($imponibile * 0.22), 2, '.', '');
-                        $totaleFattura = number_format(floatval($imponibile) + floatval($iva), 2, '.', '');
-                        @endphp
-                        <span class="price-style">Imponibile:
-                            {{$imponibile}} €
-                        </span>
-                        <span>IVA:
-                            {{$iva}} €
-                        </span>
-                        <span>
-                            Totale fattura:
-                            {{$totaleFattura}} €
-                        </span>
-                        <span class="paid-style">Fattura pagata interamente: {{$invoice->paid ? 'Sì' :
-                            'No'}}</span>
-                    </div>
-                </div> --}}
-
+            <div class="ms_card">
                 <form action="{{route('update.servicesold')}}" method="POST">
                     @csrf
                     @method('PUT')
 
-                    {{-- TABELLA EDITABILE --}}
-                    <table class="table w-100 mb-3">
+                    <h2>FATTURA N° {{$invoice->id}}</h2>
+                    <br>
+                    {{-- TABELLA EDITABILE (COMPUTER)--}}
+                    <table class="desktopTable table mb-3">
                         <thead>
                             <tr>
-                                <th class="border border-dark" style="width: 400px; background: gray; color: white">
+                                <th class="border border-dark" style="background: gray; color: white">
                                     Servizio
                                 </th>
-                                <th class="border border-dark" style="width: 150px; background: gray; color: white">
-                                    Prezzo
-                                    unitario
-                                    (€)
+                                <th class="border border-dark text-center" style="background: gray; color: white">
+                                    €
                                 </th>
-                                <th class="border border-dark" style="width: 200px; background: gray; color: white">
+                                <th class="border border-dark" style="background: gray; color: white">
                                     Erogato
                                     da
                                 </th>
@@ -88,52 +58,79 @@
                         </tbody>
                     </table>
 
-                    <div class="d-flex justify-content-end">
-                        <input type="submit" value="SALVA" style="width">
+                    {{-- TABELLA EDITABILE (SMARTPHONE) --}}
+                    <div class="phoneTable table mb-3">
+
+                        <div class="border border-dark"
+                            style="background: gray; color: white; padding: 10px; font-weight: bold;">
+                            <span>
+                                Servizi in fattura
+                            </span>
+                        </div>
+
+                        <div class="services-container">
+                            @foreach ($servicesSold as $serviceSold)
+                            <input type="hidden" name="servicesSold[{{ $serviceSold->id }}][id]"
+                                value="{{ $serviceSold->id }}">
+                            <div class="service-row">
+                                <div class="border border-dark p-4" style="background-color: white;">
+                                    Servizio: {{$serviceSold->service->name}}
+                                    <br><br>
+                                    Prezzo: {{$serviceSold->price}} €
+                                    <br><br>
+                                    Erogato da: <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
+                                        class="delivered_by">
+                                        <option value="">Nessuno</option>
+                                        @foreach ($consultants as $consultant)
+                                        <option value="{{$consultant->id}}" @if($serviceSold->delivered_by != null &&
+                                            $consultant->id == $serviceSold->delivered_by)
+                                            selected @endif>
+                                            {{$consultant->name}} {{$consultant->lastname}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="saveBtnDiv">
+                        <input class="saveBtn" type="submit" value="SALVA">
                     </div>
                 </form>
-
-
-                {{-- Prezzo fattura --}}
-
             </div>
 
-            <div class="ms_card card">
-                <h3>RATE E PAGAMENTI</h3>
-
-                {{-- logica che mi conta il numero di rate associate a questo client_service_id --}}
-                @php
-                $clientServiceId = $invoice->client_service_id;
-                $installmentsCount = $invoice->installments()->count();
-                @endphp
-
-                <span class="mb-3">Numero di rate: {{ $installmentsCount }}</span>
-
+            <div class="ms_card mt-3">
                 <div class="installment-card-container d-flex flex-wrap mb-4">
                     <form action="{{route('update.installments', $invoice->id)}}" method="POST" class="mb-4">
                         @csrf
                         @method('PUT')
-
-                        <input id="updateInstallmentsBtn" type="submit" value="Salva">
-                        <button class="ms_button mb-4" id="edit-installments">
-                            <a href=" #">MODIFICA RATE</a>
+                        <button class="ms_button installmentsBtn" id="create-installments">
+                            <a href="{{route('index.installments', $invoice->id)}}">NUOVA
+                                RATA</a>
                         </button>
-                        <button class="ms_button">
-                            <a href="{{route('index.installments', $invoice->id)}}">CREA NUOVA RATA</a>
+                        <button class="ms_button mb-4 installmentsBtn" id="edit-installments">
+                            <a href="#" onclick="return false;">MODIFICA RATE / PAGAMENTI / PROVVIGIONI</a>
                         </button>
+                        <input id="updateInstallmentsBtn" class="saveBtn" type="submit" value="SALVA">
 
-                        <div class="form-container">
+                        <div class="form-container row" style="padding: 10px;">
                             @foreach ($installments as $installment)
-
-                            <div class=" p-1">
-
-                                <div class="installment-card p-3">
-                                    <span>Rata n. {{ $loop->iteration }}</span>
+                            <div class="col-12 mt-4">
+                                <div class="installment-card">
+                                    <span><b>Rata n. {{ $loop->iteration }}</b></span>
                                     <br><br>
 
                                     {{-- PREZZO DELLA RATA --}}
+                                    @php
+                                    $imponibile = $installment->amount;
+                                    $iva = $imponibile * 0.22;
+                                    $totale = $imponibile + $iva;
+                                    @endphp
                                     <label for="amount_{{ $installment->id }}">Totale rata: </label>
-                                    <span class="info-span">{{$installment->amount}} €</span>
+                                    <span class="info-span">{{$totale}} €</span>
                                     <input class="info-input" type="number"
                                         name="installments[{{ $installment->id }}][amount]"
                                         id="amount_{{ $installment->id }}" value="{{$installment->amount}}">
@@ -171,7 +168,6 @@
 
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -206,53 +202,156 @@
 
 <style scoped lang="scss">
     .container_macro {
-
         display: flex;
         justify-content: center;
 
         .section-container {
-            width: 90%;
-            margin-top: 20px;
+            width: 100%;
             margin-bottom: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
 
-
             .ms_card {
-                width: 90%;
+                width: 100%;
                 min-height: 200px;
-                border: 1px solid black;
                 padding: 30px;
 
+                .phoneTable {
+                    display: none;
+                    padding: 10px;
+                }
+
                 .installment-card {
-                    border: 1px solid green;
-                    border-radius: 15px;
+                    border: 1px solid black;
                     cursor: pointer;
+                    padding: 20px;
+
+                    .info-input {
+                        display: none;
+                        width: 70%
+                    }
                 }
             }
         }
     }
 
-    .info-input {
-        display: none;
+    .saveBtnDiv {
+        display: flex;
+        justify-content: flex-end;
     }
+
+    .saveBtn {
+        padding: 5px 10px;
+        background-color: rgb(28, 192, 28);
+        border: none;
+        color: white;
+    }
+
+    .saveBtn:hover {
+        background-color: rgb(97, 255, 97);
+    }
+
 
     form {
         width: 100%;
 
-        .form-container {
-            width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
         #updateInstallmentsBtn {
             display: none;
+            padding: 10px;
         }
     }
 
-    #edit-installments {
+    .installmentsBtn {
         max-width: 150px;
+        background-color: #4a6da7;
+        border: none;
+        padding: 10px;
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    }
+
+    .installmentsBtn:hover {
+        background-color: #35517e;
+    }
+
+
+
+    /* MEDIA QUERY */
+    @media all and (max-width: 752px) {
+
+        .container_macro {
+
+            .section-container {
+
+                .ms_card {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    @media all and (max-width: 688px) {
+        .container_macro {
+            .section-container {
+                .ms_card {
+                    .desktopTable {
+                        display: none;
+                    }
+
+                    .phoneTable {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .saveBtnDiv {
+            justify-content: center;
+
+            .saveBtn {
+                width: 90%;
+                padding: 5px 10px;
+                background-color: rgb(28, 192, 28);
+                border: none;
+                color: white;
+            }
+        }
+
+
+    }
+
+
+    @media all and (max-width: 526px) {
+        .container_macro {
+            .section-container {
+                .ms_card {
+                    padding: 1px;
+
+                    .installment-card {
+                        border: 1px solid black;
+                        cursor: pointer;
+                        padding: 20px;
+                    }
+                }
+            }
+        }
+
+        #create-installments {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .installmentsBtn {
+            width: 100%;
+            margin-left: 20px;
+        }
+
+        .saveBtnDiv {
+            margin-bottom: 50px;
+        }
     }
 </style>

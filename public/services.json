@@ -44,8 +44,8 @@
         "price": 500.00
     },
     {
-        "name": "I profile System - test per selezione",
-        "price": 2000.00
+        "name": "I-PROFILE SYSTEM",
+        "price": 3000.00
     },
     {
         "name": "MBS EDILE - CLASSE FORMAZIONE PER IMPRESE EDILI",
@@ -104,10 +104,6 @@
         "price": 2500.00
     },
     {
-        "name": "CORSO IMPRENDITORE LIBERO",
-        "price": 1500.00
-    },
-    {
         "name": "TSA",
         "price": null
     },
@@ -128,10 +124,6 @@
         "price": null
     },
     {
-        "name": "ACADEMY INTERAZIONALE COLLABORATORI",
-        "price": 700.00
-    },
-    {
         "name": "Corso marketing",
         "price": null
     },
@@ -149,7 +141,7 @@
     },
     {
         "name": "TEAM ACADEMY",
-        "price": 700.00
+        "price": 800.00
     },
     {
         "name": "HR STRATEGY",

@@ -6,88 +6,173 @@
 <div class="main-content">
     <h2>Tutte le fatture</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th class="border border-dark">#</th>
-                <th class="border border-dark">Data fattura</th>
-                <th class="border border-dark" style="max-width: 100px">Cliente</th>
-                <th class="border border-dark">Consulente</th>
-                <th class="border border-dark">Servizi</th>
-                <th class="border border-dark">Imponibile</th>
-                <th class="border border-dark">Iva</th>
-                <th class="border border-dark">Tot. Fattura</th>
-                <th class="border border-dark">Rate</th>
-                <th class="border border-dark">Stato</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($invoices as $invoice)
 
-            {{-- CALCOLO IMPONIBILE, IVA E TOTALE FATTURA --}}
-            @php
-            $imponibile = isset($invoice->price) ? number_format(floatval($invoice->price), 2, '.', '') : 0;
-            $iva = number_format(floatval($imponibile * 0.22), 2, '.', '');
-            $totaleFattura = number_format(floatval($imponibile) + floatval($iva), 2, '.', '');
-            @endphp
+    <div class="ms_container gg" style="width: 98%; margin: 0 auto">
+        <div class="headerRow">
+            <div class="col_id border border-dark" style="display: flex; align-items: center; justify-content: center">#
+            </div>
+            <div class="col_date border border-dark"
+                style="display: flex; align-items: center; justify-content: center">Data
+            </div>
+            <div class="col_client border border-dark"
+                style="display: flex; align-items: center; justify-content: center">
+                Cliente</div>
+            <div class="col_consultant border border-dark"
+                style="display: flex; align-items: center; justify-content: center">Consul.</div>
+            <div class="col_services border border-dark" style="text-align: center">
+                <div
+                    style="border-bottom: 1px solid black; height: 50%; display: flex; align-items: center; justify-content: center">
+                    Servizi</div>
+                <div style="display: flex; height: 50%">
+                    <div class="col-6"
+                        style="border-right: 1px solid black; font-size: 12px; display: flex; align-items: center; justify-content: center">
+                        Nome servizio</div>
+                    <div class="col-1"
+                        style="border-right: 1px solid black; font-size: 12px; display: flex; align-items: center; justify-content: center">
+                        Q.tà</div>
+                    <div class="col-2"
+                        style="border-right: 1px solid black; font-size: 12px; display: flex; align-items: center; justify-content: center">
+                        Prezzo</div>
+                    <div class="col-3"
+                        style="font-size: 12px; display: flex; align-items: center; justify-content: center">Tot
+                        servizio
+                    </div>
+                </div>
+            </div>
+            <div class="col_net border border-dark"
+                style="text-align: center; display: flex; align-items: center; justify-content: center">Netto</div>
+            <div class="col_iva border border-dark"
+                style="text-align: center; display: flex; align-items: center; justify-content: center">IVA</div>
+            <div class="col_totalPrice border border-dark"
+                style="text-align: center; display: flex; align-items: center; justify-content: center">Totale</div>
+            <div class="col_installments border border-dark" style="text-align: center">
+                <div
+                    style="border-bottom: 1px solid black; height: 50%; display: flex; align-items: center; justify-content: center">
+                    Rate</div>
+                <div style="display: flex; height: 50%">
+                    <div class="col-7"
+                        style="border-right: 1px solid black; font-size: 12px; height: 100%; display: flex; align-items: center; justify-content: center">
+                        Totale rata
+                    </div>
+                    <div class="col-5"
+                        style="font-size: 12px; height: 100%; display: flex; align-items: center; justify-content: center">
+                        Scadenza</div>
+                </div>
+            </div>
+        </div>
 
+        @foreach ($invoices as $invoice)
 
-            {{-- CONTEGGIO RATE --}}
-            @php
-            $clientServiceId = $invoice->client_service_id;
-            $installmentsCount = $invoice->installments()->count();
-            @endphp
+        <div>
+            <a class="ms_row d-flex" href="{{route('show.invoice', $invoice->id)}}"
+                style="text-decoration: none; color: black">
+                @php
+                // IMPONIBILE, IVA E TOTALE FATTURA
+                $imponibile = isset($invoice->price) ? number_format(floatval($invoice->price), 2, '.', '') : 0;
+                $iva = number_format(floatval($imponibile * 0.22), 2, '.', '');
+                $totaleFattura = number_format(floatval($imponibile) + floatval($iva), 2, '.', '');
 
-            <tr class="clickable-row" data-href="{{route('show.invoice', $invoice -> id)}}">
-                <td class="border border-dark">
+                // RAGGRUPPO I SERVICESOLD PER SERVICE_ID
+                $groupedServices = $servicesSold->where('invoice_id', $invoice->id)->groupBy('service_id');
+                $installments = $invoice->installments;
+                @endphp
+
+                {{-- ID --}}
+                <div class="col_id border border-dark"
+                    style="display: flex; justify-content: center; align-items: center; text-decoration: none">
                     {{$invoice->id}}
-                </td>
-                <td class="border border-dark">{{ date('d-m-Y',
-                    strtotime($invoice->invoice_date))}}</td>
+                </div>
 
-                <td class="border border-dark" style="max-width: 100px">{{$invoice->client->name}}</td>
-                <td class="border border-dark">{{$invoice->client->consultant->name}}
-                    {{$invoice->client->consultant->lastname}}</td>
-                <td class="border border-dark">
+                {{-- DATA --}}
+                <div class="col_date border border-dark"
+                    style="display: flex; justify-content: center; align-items: center">{{
+                    date('j/n/y',
+                    strtotime($invoice->invoice_date))}}
+                </div>
 
-                    {{-- LOGICA PER RAGGRUPPARE I SERVICESOLD IN BASE AL SERVIZIO VENDUTO --}}
+                {{-- CLIENTE --}}
+                <div class="col_client border border-dark"
+                    style="display: flex; justify-content: center; align-items: center; text-align: center">
+                    {{$invoice->client->name}}
+                </div>
+
+                {{-- CONSULENTE --}}
+                <div class="col_consultant border border-dark"
+                    style="display: flex; justify-content: center; align-items: center; text-align: center">
+                    {{$invoice->client->consultant->name}} {{$invoice->client->consultant->lastname}}
+                </div>
+
+                {{-- SERVIZI --}}
+                <div class="col_services border border-dark">
+                    @foreach ($groupedServices as $serviceId => $services)
+
                     @php
-                    $groupedServices = $servicesSold->where('invoice_id', $invoice->id)->groupBy('service_id');
-                    $countedServices = $groupedServices->map(function ($services) {
-                    return [
-                    'name' => $services->first()->service->name,
-                    'count' => $services->count()
-                    ];
-                    });
+                    $serviceName = $services[0]->service->name;
+                    $servicePrice = $services[0]->price;
+                    $serviceQuantity = $services->count();
+                    $totalPricePerService = $servicePrice * $serviceQuantity;
                     @endphp
 
-                    @foreach ($countedServices as $service)
-                    @if ($service['count'] >0)
-                    <li>{{ $service['count'] }}x {{ $service['name'] }}</li>
-                    @endif
+                    <div style="display: flex;">
+                        <div class="col-6" style="border: 1px solid lightgray">{{$serviceName}}</div>
+                        <div class="col-1" style="border: 1px solid lightgray">{{$serviceQuantity}}</div>
+                        <div class="col-2" style="border: 1px solid lightgray">{{$servicePrice}}</div>
+                        <div class="col-3" style="border: 1px solid lightgray">{{$totalPricePerService}}</div>
+                    </div>
                     @endforeach
-                </td>
+                </div>
 
-                <td class="border border-dark">
-                    {{$imponibile}} €
-                </td>
-                <td class="border border-dark">{{$iva}} €</td>
-                <td class="border border-dark">{{$totaleFattura}} €</td>
-                <td class="border border-dark">{{ $installmentsCount }}</td>
-                <td class="border border-dark">{{$invoice->paid ? 'Pagata' : 'Non pagata'}}</td>
+                {{-- NETTO --}}
+                <div class="col_net border border-dark"
+                    style="display: flex; justify-content: center; align-items: center">
+                    {{$imponibile}}
+                </div>
 
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                {{-- IVA --}}
+                <div class="col_iva border border-dark"
+                    style="display: flex; justify-content: center; align-items: center">
+                    {{$iva}}
+                </div>
+
+                {{-- TOTALE LORDO --}}
+                <div class="col_totalPrice border border-dark"
+                    style="display: flex; justify-content: center; align-items: center">
+                    {{$totaleFattura}}
+                </div>
+
+                {{-- RATE --}}
+                <div class="col_installments border border-dark">
+                    @foreach ($installments as $installment)
+                    <div style="display: flex;">
+                        <div class="col-5"
+                            style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center; font-size: 10px">
+                            {{$installment->amount}}
+                        </div>
+                        <div class="col-2"
+                            style="border: 1px solid lightgray; @if ($installment->paid) background-color: green; @else background-color:red; @endif">
+                        </div>
+                        <div class="col-5"
+                            style="border: 1px solid lightgray; font-size: 10px; display: flex; justify-content: center; align-items: center">
+                            {{
+                            date('j/n/y',
+                            strtotime($installment->expire_date))}}</div>
+                    </div>
+                    @endforeach
+                </div>
+            </a>
+
+        </div>
+
+        @endforeach
+    </div>
+
+
+
 </div>
-
-
 @endsection
 
 @push('scripts')
-<script>
-    // ascolta l'evento quando l'HTML è completamente caricato
+{{-- <script>
     document.addEventListener("DOMContentLoaded", function() {
 
         // seleziona tutti gli elementi nell'HTML con classe "clickable-row" e li salva in una variabile "rows"
@@ -107,8 +192,7 @@
             });
         });
     });
-
-</script>
+</script> --}}
 @endpush
 
 <style scoped lang="scss">
@@ -116,22 +200,138 @@
         padding: 30px;
     }
 
-    table {
-        margin: 30px;
+    .headerRow {
+        display: flex;
+        justify-content: center;
+        background-color: gray;
+        color: white;
+        font-weight: bold;
+        min-height: 70px;
+    }
 
-        tr {
-            cursor: pointer;
+    .col_id {
+        width: 2%;
+        text-decoration: none;
+    }
+
+    .col_date {
+        width: 5%;
+    }
+
+    .col_client {
+        width: 9%;
+    }
+
+    .col_consultant {
+        width: 8%;
+    }
+
+    .col_services {
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .col_net {
+        width: 7%;
+    }
+
+    .col_iva {
+        width: 6%;
+    }
+
+    .col_totalPrice {
+        width: 7%;
+    }
+
+    .col_installments {
+        width: 16%;
+    }
+
+    .ms_row:hover {
+        background-color: #d38eb2;
+    }
+
+    /* MEDIA QUERY */
+    @media all and (max-width: 1350px) {
+
+        .headerRow {
+            .col_id {
+                font-size: 12px;
+            }
+
+            .col_date {
+                font-size: 12px;
+            }
+
+            .col_client {
+                font-size: 12px;
+            }
+
+            .col_consultant {
+                font-size: 12px;
+            }
+
+            .col_services {
+                font-size: 12px;
+            }
+
+            .col_net {
+                font-size: 12px;
+            }
+
+            .col_iva {
+                font-size: 12px;
+            }
+
+            .col_totalPrice {
+                font-size: 12px;
+            }
+
+            .col_installments {
+                font-size: 12px;
+            }
         }
 
-        th {
-            background-color: gray;
-            color: white;
-            font-weight: bold;
-            padding: 10px;
-        }
 
-        td {
-            padding: 5px;
+
+        .ms_row {
+
+            .col_id {
+                font-size: 10px;
+            }
+
+            .col_date {
+                font-size: 10px;
+            }
+
+            .col_client {
+                font-size: 10px;
+            }
+
+            .col_consultant {
+                font-size: 10px;
+            }
+
+            .col_services {
+                font-size: 10px;
+            }
+
+            .col_net {
+                font-size: 10px;
+            }
+
+            .col_iva {
+                font-size: 10px;
+            }
+
+            .col_totalPrice {
+                font-size: 10px;
+            }
+
+            .col_installments {
+                font-size: 10px;
+            }
         }
     }
 </style>

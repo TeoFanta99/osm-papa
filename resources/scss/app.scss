@@ -9,12 +9,23 @@ main {
     height: 100vh;
 }
 
+.main-content {
+    background-color: rgb(236, 236, 236);
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+
+
 .left-menu {
     display: flex;
     flex-direction: column;
     background-color: #b13274;
     color: white;
-    width: 300px;
+    width: 250px;
 
 
     .ms_btn {
@@ -38,12 +49,37 @@ main {
     }
 }
 
-.main-content {
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(236, 236, 236);
-    width: 100%;
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+
+// MEDIA QUERY LEFT-BAR ROSA
+@media all and (max-width: 688px) {
+    .left-menu {
+        display: flex;
+        flex-direction: column;
+        background-color: #b13274;
+        color: white;
+        width: 80px;
+
+
+        .ms_btn {
+            font-size: 25px;
+            margin: 5px;
+            display: flex;
+
+            a {
+                text-decoration: none;
+                color: white;
+                padding: 20px 10px;
+                width: 100%;
+                text-align: center;
+
+                &:hover {
+                    color: #46e3ff;
+                }
+
+                span {
+                    display: none;
+                }
+            }
+        }
+    }
 }
