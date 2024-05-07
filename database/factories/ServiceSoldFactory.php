@@ -30,6 +30,7 @@ class ServiceSoldFactory extends Factory
             'invoice_id' => $invoice->id,
             'service_id' => $service->id,
             'delivered_by' => $consultant->id,
+            'sold_by' => $consultant->id,
         ];
     }
 }

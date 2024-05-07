@@ -34,7 +34,10 @@
                     </th>
                     <th class="border border-dark" style="width: 100px; background: gray; color: white">Quantità
                     </th>
-                    <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
+                    <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo unitario
+                        (€)
+                    </th>
+                    <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo totale
                         (€)
                     </th>
                 </tr>
@@ -42,7 +45,9 @@
             <tbody class="services-container d-block">
                 <tr class="service-row">
                     <td class="border border-dark">
-                        <select class="service-select" name="service_id[]" onchange="updatePrice(this)">
+                        <select class="service-select" name="service_id[]"
+                            onchange="updateUnitPrice(this); updateTotalPrice(this)">
+                            <option value="" disabled selected>Scegli un servizio</option>
                             @foreach ($services as $service)
                             <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}
                             </option>
@@ -52,11 +57,14 @@
                     <td class="border border-dark">
                         <input type="hidden" class="service-price" name="services_price[]" value="{{$service->price}}">
                         <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
-                            onchange="updatePrice(this)">
+                            onchange="updateTotalPrice(this)">
                     </td>
                     <td class="border border-dark">
-                        <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}"
-                            step="0.01">
+                        <input type="number" class="price-input" name="price[]" value="" step="0.01"
+                            onchange="updateTotalPrice(this)">
+                    </td>
+                    <td class="border border-dark">
+                        <input disabled type="number" class="totalPrice-input" name="price[]" value="" step="0.01">
                     </td>
                 </tr>
             </tbody>
@@ -99,30 +107,34 @@
         serviceIndex++;
     }
 
-    function updatePrice(element) {
+    function updateUnitPrice(element) {
         let row = element.closest('.service-row');
         let serviceSelect = row.querySelector('.service-select');
         let selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-        let quantityInput = row.querySelector('.services_quantity');
         let priceInput = row.querySelector('.price-input');
 
         if (selectedOption) {
             let price = parseFloat(selectedOption.getAttribute('data-price'));
-            let quantity = parseInt(quantityInput.value);
-            let totalPrice = quantity * price;
-
-            if (!isNaN(totalPrice)) {
-                priceInput.value = totalPrice;
-            } else {
-                priceInput.value = 0;
-            }
-
-            let serviceId = selectedOption.value;
-            console.log('Service ID:', serviceId);
-        }
+            priceInput.value = price.toFixed(2);
+        }      
     }
 
-    console.log();
+    function updateTotalPrice(element) {
+        let row = element.closest('.service-row');
+        let quantityInput = row.querySelector('.services_quantity');
+        let priceInput = row.querySelector('.price-input');
+        let totalPriceInput = row.querySelector('.totalPrice-input');
+
+        let quantity = parseInt(quantityInput.value);
+        let price = parseFloat(priceInput.value);
+
+        if(!isNaN(quantity) && !isNaN(price)) {
+            let totalPrice = quantity * price;
+            totalPriceInput.value = totalPrice.toFixed(2);
+        } else {
+            totalPriceInput.value = 0;
+        }
+    }
 </script>
 @endpush
 
@@ -164,7 +176,8 @@
         border-radius: 5px;
     }
 
-    .price-input {
+    .price-input,
+    .totalPrice-input {
         border: 1px solid black;
         border-radius: 5px;
         max-width: 150px;

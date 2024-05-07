@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('installments_info', function (Blueprint $table) {
+        Schema::create('commissions', function (Blueprint $table) {
             $table->id();
-            $table->string('service');
             $table->decimal('price', 9, 2)->nullable();
-            $table->string('sold_by');
+            $table->string('sold_by')->nullable();
             $table->string('delivered_by')->nullable();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('installments_info');
+        Schema::dropIfExists('commissions');
     }
 };

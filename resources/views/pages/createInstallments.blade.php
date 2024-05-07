@@ -11,13 +11,6 @@
 
                 <div id="new_installment_form">
 
-                    <label>Quante rate vuoi creare?</label>
-                    <select name="numbersOfInstallments" id="numbersOfInstallments">
-                        @for ($i = 1; $i < 11; $i++) <option value="{{$i}}">{{$i}}</option>
-                            @endfor
-                    </select>
-                    <br><br><br>
-
                     <form method="POST" action="{{route('store.installments')}}" enctype="multipart/form-data">
                         @csrf
                         @method("POST")

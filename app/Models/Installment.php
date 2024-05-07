@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Invoice;
-use App\Models\InstallmentInfo;
+use App\Models\Commission;
 
 class Installment extends Model
 {
@@ -22,9 +22,9 @@ class Installment extends Model
         return $this -> belongsTo(Invoice :: class);
     }
 
-    public function installments_info()
+    public function commissions()
     {
-        return $this -> hasMany(InstallmentInfo :: class);
+        return $this -> hasMany(Commission :: class);
     }
     
 }

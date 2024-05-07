@@ -9,7 +9,7 @@ use App\Models\Installment;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class InstallmentInfoFactory extends Factory
+class CommissionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,7 +22,6 @@ class InstallmentInfoFactory extends Factory
         $installment = Installment :: inRandomOrder()->first();
 
         return [
-            'service' => fake() -> word(),
             'price' => fake() -> randomFloat(2, 100, 1000),
             'sold_by' => $consultant -> name . ' ' . $consultant ->lastname,
             'delivered_by' => $consultant -> name . ' ' . $consultant ->lastname,

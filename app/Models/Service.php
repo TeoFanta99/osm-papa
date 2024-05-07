@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Client;
 use App\Models\ServiceSold;
+use App\Models\Commission;
 
 class Service extends Model
 {
@@ -16,13 +17,13 @@ class Service extends Model
         return $this -> belongsToMany(Client :: class);
     }
 
-    public function clientServices()
-    {
-        return $this -> hasMany(ClientService :: class);
-    }
-
     public function servicesSold()
     {
         return $this -> hasMany(ServiceSold :: class);
+    }
+
+    public function commissions()
+    {
+        return $this -> belongsToMany(Commission :: class);
     }
 }

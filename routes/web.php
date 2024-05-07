@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\ServiceSoldController;
+use App\Http\Controllers\CommissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invoice/{id}', [InvoiceController :: class, 'show']) -> name('show.invoice');
     Route::put('/servicessold/update', [ServiceSoldController :: class, 'update']) -> name('update.servicesold');
+    Route::get('/commissions/create/{installment_id}', [CommissionController :: class, 'create']) -> name('create.newCommissions');
+    Route::post('/commissions/store', [CommissionController :: class, 'store']) -> name('store.commissions');
     
     Route::get('/installments/{id}', [InstallmentController :: class, 'index']) -> name('index.installments');
     Route::put('/update-installments/{invoice}', [InstallmentController::class, 'update'])->name('update.installments');

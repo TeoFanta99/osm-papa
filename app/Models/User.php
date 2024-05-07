@@ -44,7 +44,6 @@ class User extends Authenticatable
 
     public function consultants()
     {
-        
         return $this -> hasMany(Consultant :: class);
     }
 }

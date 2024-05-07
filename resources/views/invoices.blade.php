@@ -108,9 +108,9 @@
 
                     @php
                     $serviceName = $services[0]->service->name;
-                    $servicePrice = $services[0]->price;
+                    $servicePrice = ($services[0]->price);
                     $serviceQuantity = $services->count();
-                    $totalPricePerService = $servicePrice * $serviceQuantity;
+                    $totalPricePerService = number_format($servicePrice * $serviceQuantity, 2, '.', '');
                     @endphp
 
                     <div style="display: flex;">
@@ -145,14 +145,14 @@
                     @foreach ($installments as $installment)
                     <div style="display: flex;">
                         <div class="col-5"
-                            style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center; font-size: 10px">
+                            style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center">
                             {{$installment->amount}}
                         </div>
                         <div class="col-2"
                             style="border: 1px solid lightgray; @if ($installment->paid) background-color: green; @else background-color:red; @endif">
                         </div>
                         <div class="col-5"
-                            style="border: 1px solid lightgray; font-size: 10px; display: flex; justify-content: center; align-items: center">
+                            style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center">
                             {{
                             date('j/n/y',
                             strtotime($installment->expire_date))}}</div>
@@ -331,6 +331,10 @@
 
             .col_installments {
                 font-size: 10px;
+
+                .col-5 {
+                    font-size: 10px;
+                }
             }
         }
     }

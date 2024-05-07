@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('services_sold', function (Blueprint $table) {
+        Schema::create('commission_service', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 9, 2)->nullable();
-            $table->dateTime('issue_date');
-            $table->string('delivered_by')->nullable();
-            $table->string('sold_by')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services_sold');
+        Schema::dropIfExists('commission_service');
     }
 };

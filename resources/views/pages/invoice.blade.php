@@ -21,11 +21,7 @@
                                     Servizio
                                 </th>
                                 <th class="border border-dark text-center" style="background: gray; color: white">
-                                    €
-                                </th>
-                                <th class="border border-dark" style="background: gray; color: white">
-                                    Erogato
-                                    da
+                                    Netto (€)
                                 </th>
                             </tr>
                         </thead>
@@ -40,7 +36,7 @@
                                 <td class="border border-dark">
                                     {{$serviceSold->price}}
                                 </td>
-                                <td class="border border-dark">
+                                {{-- <td class="border border-dark">
                                     <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
                                         class="delivered_by">
                                         <option value="">Nessuno</option>
@@ -52,7 +48,7 @@
                                         </option>
                                         @endforeach
                                     </select>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -78,7 +74,7 @@
                                     <br><br>
                                     Prezzo: {{$serviceSold->price}} €
                                     <br><br>
-                                    Erogato da: <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
+                                    {{-- Erogato da: <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
                                         class="delivered_by">
                                         <option value="">Nessuno</option>
                                         @foreach ($consultants as $consultant)
@@ -88,16 +84,12 @@
                                             {{$consultant->name}} {{$consultant->lastname}}
                                         </option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                 </div>
 
                             </div>
                             @endforeach
                         </div>
-                    </div>
-
-                    <div class="saveBtnDiv">
-                        <input class="saveBtn" type="submit" value="SALVA">
                     </div>
                 </form>
             </div>
@@ -112,29 +104,39 @@
                                 RATA</a>
                         </button>
                         <button class="ms_button mb-4 installmentsBtn" id="edit-installments">
-                            <a href="#" onclick="return false;">MODIFICA RATE / PAGAMENTI / PROVVIGIONI</a>
+                            <a href="#" onclick="return false;">MODIFICA PAGAMENTI</a>
                         </button>
                         <input id="updateInstallmentsBtn" class="saveBtn" type="submit" value="SALVA">
 
                         <div class="form-container row" style="padding: 10px;">
                             @foreach ($installments as $installment)
-                            <div class="col-12 mt-4">
-                                <div class="installment-card">
+                            <div class="col-12 mt-4" style="display:flex; flex-wrap: wrap; border: 1px solid black;">
+                                <div class="col-12 col-md-6 installment-card">
                                     <span><b>Rata n. {{ $loop->iteration }}</b></span>
                                     <br><br>
-
+                                    {{-- ID della rata: {{$installment->id}} (debug...)
+                                    <br><br> --}}
                                     {{-- PREZZO DELLA RATA --}}
                                     @php
                                     $imponibile = $installment->amount;
                                     $iva = $imponibile * 0.22;
+                                    $iva = number_format($iva, 2, '.', '');
                                     $totale = $imponibile + $iva;
                                     @endphp
-                                    <label for="amount_{{ $installment->id }}">Totale rata: </label>
+                                    <label class="ivaInclusa" for="amount_{{ $installment->id }}">Netto: {{$imponibile}}
+                                        €
+                                    </label>
+                                    <br>
+                                    <label class="iva" for="amount_{{ $installment->id }}">IVA: {{$iva}} €
+                                    </label>
+                                    <br><br>
+                                    <label class="ivaEsclusa" for="amount_{{ $installment->id }}">Totale rata: </label>
                                     <span class="info-span">{{$totale}} €</span>
                                     <input class="info-input" type="number"
                                         name="installments[{{ $installment->id }}][amount]"
                                         id="amount_{{ $installment->id }}" value="{{$installment->amount}}">
-                                    <br><br>
+                                    <br><br><br>
+
 
                                     {{-- SCADENZA DELLA RATA --}}
                                     <label for="expire_date_{{ $installment->id }}">Data di scadenza: </label>
@@ -147,18 +149,93 @@
                                     <br><br>
 
                                     {{-- STATO PAGAMENTO --}}
-                                    <label for="paid_{{ $installment->id }}">È stata pagata? </label>
+                                    <label for="paid_{{ $installment->id }}">Stato: </label>
                                     <span class="info-span {{$installment->paid ? 'text-success' : 'text-danger'}}"
                                         style="font-weight: bold">
                                         {{$installment->paid ? 'Pagata' : 'Non pagata'}}
                                     </span>
                                     <select class="info-input" name="installments[{{ $installment->id }}][paid]"
                                         id="paid_{{ $installment->id }}">
-                                        <option value="0" {{ $installment->paid == 0 ? 'selected' : '' }}>No
+                                        <option value="0" {{ $installment->paid == 0 ? 'selected' : '' }}>Non pagata
                                         </option>
-                                        <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Sì
+                                        <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Pagata
                                         </option>
                                     </select>
+                                </div>
+
+
+
+                                {{-- SEZIONE PROVVIGIONI --}}
+                                <div class="col-12 col-md-6" style="margin-top: 15px; padding: 10px">
+                                    <span><b>Provvigioni</b></span>
+
+                                    <a class="ms_button mb-4 commissionsBtn mx-2"
+                                        href="{{route('create.newCommissions', ['installment_id' => $installment->id])}}">AGGIUNGI
+                                    </a>
+
+                                    <a class="ms_button mb-4 commissionsBtn mx-2" href="#">MODIFICA
+                                    </a>
+                                    <br>
+                                    <ul class="mt-3" style="padding-left: 0px">
+                                        @php
+                                        $commissionTotal = 0;
+                                        @endphp
+                                        @foreach ($installment->commissions as $commission)
+                                        <ul class="border border-2 border-primary rounded">
+                                            <li>Totale: {{ $commission->price }} €</li>
+                                            <li>@if (!$commission->sold_by) Nessun consulente
+                                                @else
+                                                @php
+                                                $consultant = $consultants->firstWhere('id', $commission->sold_by);
+                                                @endphp
+                                                Venditore: {{$consultant->name}} {{$consultant->lastname}}
+                                                @endif
+                                            </li>
+                                            <li>@if (!$commission->delivered_by) Nessun consulente
+                                                @else
+                                                @php
+                                                $consultant = $consultants->firstWhere('id', $commission->delivered_by);
+                                                @endphp
+                                                Erogatore: {{$consultant->name}} {{$consultant->lastname}}
+                                                @endif
+                                            </li>
+                                            <li>
+                                                Servizi:
+                                                <ul>
+                                                    @for ($i = 0; $i < $commission->services->count(); $i++)
+                                                        <li>{{$commission->services[$i]->name}}</li>
+                                                        @endfor
+                                                </ul>
+                                            </li>
+                                        </ul>
+
+                                        @php
+                                        $commissionTotal += $commission->price;
+                                        $commissionTotal = number_format($commissionTotal, 2, '.', '');
+                                        @endphp
+                                    </ul>
+
+                                    @endforeach
+                                    </ul>
+
+                                    @php
+                                    $imponibile = $installment->amount;
+                                    $iva = $imponibile * 0.22;
+                                    $totale = $imponibile + $iva;
+                                    @endphp
+
+                                    @if ($commissionTotal == 0)
+                                    @elseif ($commissionTotal != $imponibile)
+                                    <div class="alert alert-danger mt-3" role="alert">
+                                        Netto rata: {{$imponibile}} €
+                                        <br>
+                                        Somma provvigioni: {{$commissionTotal}} €
+                                        <br><br>
+                                        Correggere la differenza
+                                    </div>
+                                    @endif
+
+
                                 </div>
                             </div>
 
@@ -223,7 +300,6 @@
                 }
 
                 .installment-card {
-                    border: 1px solid black;
                     cursor: pointer;
                     padding: 20px;
 
@@ -252,6 +328,19 @@
         background-color: rgb(97, 255, 97);
     }
 
+    .commissionsBtn {
+        padding: 5px 10px;
+        font-size: 13px;
+        background-color: rgb(28, 156, 192);
+        border: none;
+        text-decoration: none;
+        color: white;
+    }
+
+    .commissionsBtn:hover {
+        background-color: rgb(97, 189, 255);
+    }
+
 
     form {
         width: 100%;
@@ -277,7 +366,6 @@
     .installmentsBtn:hover {
         background-color: #35517e;
     }
-
 
 
     /* MEDIA QUERY */
@@ -332,7 +420,6 @@
                     padding: 1px;
 
                     .installment-card {
-                        border: 1px solid black;
                         cursor: pointer;
                         padding: 20px;
                     }

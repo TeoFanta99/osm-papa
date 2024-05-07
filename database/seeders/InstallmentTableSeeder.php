@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Installment;
-use App\Models\InstallmentInfo;
+use App\Models\Commission;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\ServiceSold;
@@ -65,11 +65,11 @@ class InstallmentTableSeeder extends Seeder
 
                 $randomService = Service :: findOrFail($randomServiceId)->name;
 
-                InstallmentInfo :: factory()->count($installmentsNumber)->create([
-                'installment_id' => $installment->id,
-                'price' => $currentAmount / $installmentsNumber,
-                'service' => $randomService
-                ]);
+                // Commission :: factory()->count($installmentsNumber)->create([
+                // 'installment_id' => $installment->id,
+                // 'price' => $currentAmount / $installmentsNumber,
+                // 'service' => $randomService
+                // ]);
             }
         });
     }

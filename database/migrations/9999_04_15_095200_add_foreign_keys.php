@@ -35,8 +35,13 @@ return new class extends Migration
             $table->foreignId('service_id')->nullable()->constrained('services');
         });
 
-        Schema::table('installments_info', function (Blueprint $table) {
+        Schema::table('commissions', function (Blueprint $table) {
             $table->foreignId('installment_id')->nullable()->constrained('installments');
+        });
+
+        Schema::table('commission_service', function (Blueprint $table) {
+            $table->foreignId('commission_id')->constrained('commissions');
+            $table->foreignId('service_id')->constrained('services');
         });
     }
 
@@ -76,10 +81,16 @@ return new class extends Migration
             $table->dropColumn(['service_id']);
         });
 
-        Schema::table('installments_info', function (Blueprint $table) {
+        Schema::table('commissions', function (Blueprint $table) {
             $table->dropForeign(['installment_id']);
             $table->dropColumn(['installment_id']);
         });
 
+        Schema::table('commission_service', function (Blueprint $table) {
+            $table->dropForeign(['commission_id']);
+            $table->dropColumn(['commission_id']);
+            $table->dropForeign(['service_id']);
+            $table->dropColumn(['service_id']);
+        });
     }
 };
