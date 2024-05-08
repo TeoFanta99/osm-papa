@@ -15,16 +15,9 @@
                 $installmentTotalPrice = $installmentNet + $iva;
                 @endphp
 
-                <span style="margin-bottom: 30px">La somma di tutte le provvigioni dovrà essere pari a
+                <span style="margin-bottom: 30px">La somma dei servizi dovrà essere pari a
                     {{$installmentNet}} € (IVA esclusa).
                 </span>
-
-                {{-- SELECT PER CREARE LE PROVVIGIONI --}}
-                <label for="">Quante provvigioni vuoi creare?</label>
-                <select name="numberOfCommissions" id="numberOfCommissions" style="width: 15%; margin-bottom: 30px">
-                    @for ($i = 1; $i < 11; $i++) <option>{{$i}}</option>
-                        @endfor
-                </select>
 
                 <form method="POST" action="{{route('store.commissions')}}" enctype="multipart/form-data">
                     @csrf
@@ -34,8 +27,45 @@
 
 
                     {{-- CONTENITORE DI TUTTI I FORM DI CREAZIONE DELLE PROVVIGIONI --}}
-                    <div id="commissionFormsContainer">
-                    </div>
+                    <table style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th class="border border-dark headerRow">Servizio</th>
+                                <th class="border border-dark headerRow">Prezzo</th>
+                                <th class="border border-dark headerRow">VSS</th>
+                                <th class="border border-dark headerRow">VSD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($servicesSold as $serviceSold)
+                            <tr>
+                                <td class="border border-dark">
+                                    <label
+                                        for="service{{$serviceSold->service->id}}_${i}">{{$serviceSold->service->name}}</label>
+                                </td>
+                                <td class="border border-dark">
+                                    <input type="number" name="price[{{ $loop->index }}]">
+                                </td>
+                                <td class="border border-dark">
+                                    <select name="sold_by[{{ $loop->index }}]">
+                                        <option value="">Nessuno</option>
+                                        @foreach($consultants as $consultant)
+                                        <option>{{$consultant->name}} {{$consultant->lastname}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="border border-dark">
+                                    <select name="delivered_by[{{ $loop->index }}]">
+                                        <option value="">Nessuno</option>
+                                        @foreach($consultants as $consultant)
+                                        <option>{{$consultant->name}} {{$consultant->lastname}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
 
                     <input class="mt-5 createBtn" type="submit" value="CREA">
@@ -50,101 +80,6 @@
 </div>
 
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Ottieni il numero di commissionForms iniziali
-    let initialNumberOfCommissions = parseInt(document.getElementById('numberOfCommissions').value);
-    let commissionFormsContainer = document.getElementById('commissionFormsContainer');
-
-    // Aggiungi i commissionForms iniziali
-    for (let i = 0; i < initialNumberOfCommissions; i++) {
-        let commissionForm = document.createElement('div');
-        commissionForm.classList.add('commissionForm'); // Aggiungi la classe commissionForm
-
-        commissionForm.innerHTML = `
-            <label for="price${i}" class="me-3">Totale provvigione</label>
-            <input type="number" name="commissions[${i}][price]" id="price${i}" class="mb-3" step="0.01" min="0"><br><br>
-
-            <label for="servicesList${i}" class="me-3 mb-2">Servizi da includere:</label>
-            <ul style="list-style-type: none">
-            @foreach ($servicesSold as $serviceSold)
-            <li>
-                <input type="checkbox" id="service{{$serviceSold->service->id}}_${i}" name="commissions[${i}][services][]" value="{{$serviceSold->service->id}}">
-                <label for="service{{$serviceSold->service->id}}_${i}">{{$serviceSold->service->name}}</label>   
-            </li>
-            @endforeach
-            </ul>
-
-            <br><br>
-            
-            <label for="soldByConsultant${i}" class="me-3">Consulente venditore</label>
-            <select name="commissions[${i}][sold_by]" id="soldByConsultant${i}" class="mb-3">
-                <option value="">Nessuno</option>
-                @foreach($consultants as $consultant)
-                    <option value="{{$consultant->id}}">{{$consultant->name}} {{$consultant->lastname}}</option>
-                @endforeach  
-            </select>
-            <br>
-            <label for="deliveredByConsultant${i}" class="me-3">Consulente erogatore</label>
-            <select name="commissions[${i}][delivered_by]" id="deliveredByConsultant${i}" class="mb-3">
-                <option value="">Nessuno</option>
-                @foreach($consultants as $consultant)
-                    <option value="{{$consultant->id}}">{{$consultant->name}} {{$consultant->lastname}}</option>
-                @endforeach  
-            </select>
-        `;
-        commissionFormsContainer.appendChild(commissionForm);
-    }
-});
-
-    document.getElementById('numberOfCommissions').addEventListener('change', function() {
-        let numberOfCommissions = parseInt(this.value);
-        let commissionFormsContainer = document.getElementById('commissionFormsContainer');
-        commissionFormsContainer.innerHTML = '';
-
-        for (let i = 0; i < numberOfCommissions; i++) {
-            let commissionForm = document.createElement('div');
-            commissionForm.classList.add('commissionForm');
-
-            commissionForm.innerHTML = `
-            <label for="price${i}" class="me-3">Totale provvigione</label>
-            <input type="number" name="commissions[${i}][price]" id="price${i}" class="mb-3" step="0.01" min="0"><br><br>
-
-            <label for="servicesList${i}" class="me-3 mb-2">Servizi da includere:</label>
-            <ul style="list-style-type: none">
-            @foreach ($servicesSold as $serviceSold)
-            <li>
-                <input type="checkbox" id="service{{$serviceSold->service->id}}_${i}" name="commissions[${i}][services][]" value="{{$serviceSold->service->id}}">
-                <label for="service{{$serviceSold->service->id}}_${i}">{{$serviceSold->service->name}}</label>   
-            </li>
-            @endforeach
-            </ul>
-
-            <br><br>
-            
-            <label for="soldByConsultant${i}" class="me-3">Consulente venditore</label>
-            <select name="commissions[${i}][sold_by]" id="soldByConsultant${i}" class="mb-3">
-                <option value="">Nessuno</option>
-                @foreach($consultants as $consultant)
-                    <option value="{{$consultant->id}}">{{$consultant->name}} {{$consultant->lastname}}</option>
-                @endforeach  
-            </select>
-            <br>
-            <label for="deliveredByConsultant${i}" class="me-3">Consulente erogatore</label>
-            <select name="commissions[${i}][delivered_by]" id="deliveredByConsultant${i}" class="mb-3">
-                <option value="">Nessuno</option>
-                @foreach($consultants as $consultant)
-                    <option value="{{$consultant->id}}">{{$consultant->name}} {{$consultant->lastname}}</option>
-                @endforeach  
-            </select>
-        `;
-            commissionFormsContainer.appendChild(commissionForm);
-        }
-    });
-</script>
-@endpush
 
 
 <style>
@@ -172,5 +107,11 @@
         margin: 10px auto;
         border: 1px solid black;
         padding: 10px;
+    }
+
+    .headerRow {
+        background-color: gray;
+        color: white;
+        font-weight: bold;
     }
 </style>

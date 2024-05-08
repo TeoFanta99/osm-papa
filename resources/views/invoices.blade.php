@@ -104,11 +104,14 @@
 
                 {{-- SERVIZI --}}
                 <div class="col_services border border-dark">
+                    @php
+
+                    @endphp
                     @foreach ($groupedServices as $serviceId => $services)
 
                     @php
                     $serviceName = $services[0]->service->name;
-                    $servicePrice = ($services[0]->price);
+                    $servicePrice = $services[0]->price;
                     $serviceQuantity = $services->count();
                     $totalPricePerService = number_format($servicePrice * $serviceQuantity, 2, '.', '');
                     @endphp

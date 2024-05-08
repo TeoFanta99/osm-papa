@@ -44,16 +44,18 @@
             </thead>
             <tbody class="services-container d-block">
                 <tr class="service-row">
-                    <td class="border border-dark">
-                        <select class="service-select" name="service_id[]"
-                            onchange="updateUnitPrice(this); updateTotalPrice(this)">
-                            <option value="" disabled selected>Scegli un servizio</option>
+                    <td class="border border-dark" style="width: 500px">
+                        <input type="text" class="service-input" oninput="filterServices(this); updateUnitPrice(this)"
+                            list="serviceList" placeholder="Cerca servizio" style="width: 75%">
+                        <input type="hidden" class="service-id" name="service_id[]" value="">
+                        <datalist id="serviceList">
                             @foreach ($services as $service)
-                            <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}
-                            </option>
-                            @endforeach
-                        </select>
+                            <option value="{{$service->name}}" data-price="{{$service->price}}"
+                                data-id="{{$service->id}}">
+                                @endforeach
+                        </datalist>
                     </td>
+
                     <td class="border border-dark">
                         <input type="hidden" class="service-price" name="services_price[]" value="{{$service->price}}">
                         <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
@@ -64,7 +66,8 @@
                             onchange="updateTotalPrice(this)">
                     </td>
                     <td class="border border-dark">
-                        <input disabled type="number" class="totalPrice-input" name="price[]" value="" step="0.01">
+                        <input disabled type="number" class="totalPrice-input" name="totalPrice[]" value="" step="0.01">
+                        <input type="hidden" class="total-price-hidden" name="total_price[]" value="">
                     </td>
                 </tr>
             </tbody>
@@ -81,6 +84,14 @@
 @push('scripts')
 
 <script>
+    window.onload = function() {
+    // Recupera tutti gli elementi con la classe .service-input e chiama updateTotalPrice per ciascuno di essi
+    let serviceInputs = document.querySelectorAll('.service-input');
+    serviceInputs.forEach(function(input) {
+        updateTotalPrice(input);
+    });
+};
+
     let serviceIndex = 1;
     
     function addServiceRow() {
@@ -88,20 +99,32 @@
         newRow.classList.add('service-row');
 
         newRow.innerHTML = `
-            <td class="border border-dark">
-                <select class="service-select" name="service_id[${serviceIndex}]" onchange="updatePrice(this)">
-                    @foreach ($services as $service)
-                    <option value="{{$service->id}}" data-price="{{$service->price}}">{{$service->name}}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td class="border border-dark">
-                <input type="hidden" class="service-price" name="services_price[${serviceIndex}]" value="{{$service->price}}">
-                <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1" onchange="updatePrice(this)">
-            </td>
-            <td class="border border-dark">
-                <input type="number" class="price-input" name="price[]" value="{{$services[0]->price}}" step="0.01">
-            </td>`;
+        <td class="border border-dark" style="width: 500px">
+                        <input type="text" class="service-input" oninput="filterServices(this); updateUnitPrice(this)"
+                            list="serviceList" placeholder="Cerca servizio" style="width: 75%">
+                        <input type="hidden" class="service-id" name="service_id[]" value="">
+                        <datalist id="serviceList">
+                            @foreach ($services as $service)
+                            <option value="{{$service->name}}" data-price="{{$service->price}}"
+                                data-id="{{$service->id}}">
+                                @endforeach
+                        </datalist>
+                    </td>
+
+                    <td class="border border-dark">
+                        <input type="hidden" class="service-price" name="services_price[]" value="{{$service->price}}">
+                        <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
+                            onchange="updateTotalPrice(this)">
+                    </td>
+                    <td class="border border-dark">
+                        <input type="number" class="price-input" name="price[]" value="" step="0.01"
+                            onchange="updateTotalPrice(this)">
+                    </td>
+                    <td class="border border-dark">
+                        <input disabled type="number" class="totalPrice-input" name="totalPrice[]"
+                            value="" step="0.01">
+                        <input type="hidden" class="total-price-hidden" name="total_price[]" value="">
+                    </td>`;
 
         document.querySelector('.services-container').appendChild(newRow);
         serviceIndex++;
@@ -109,13 +132,18 @@
 
     function updateUnitPrice(element) {
         let row = element.closest('.service-row');
-        let serviceSelect = row.querySelector('.service-select');
-        let selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+        let serviceSelect = row.querySelector('.service-input');
+        let selectedOption = row.querySelector(`option[value="${element.value}"]`);
         let priceInput = row.querySelector('.price-input');
+        let serviceIdInput = row.querySelector('.service-id');
 
         if (selectedOption) {
             let price = parseFloat(selectedOption.getAttribute('data-price'));
             priceInput.value = price.toFixed(2);
+
+            let serviceId = selectedOption.getAttribute('data-id');
+            serviceIdInput.value = serviceId;
+            console.log('ID del servizio selezionato:', serviceId);
         }      
     }
 
@@ -124,17 +152,38 @@
         let quantityInput = row.querySelector('.services_quantity');
         let priceInput = row.querySelector('.price-input');
         let totalPriceInput = row.querySelector('.totalPrice-input');
+        let totalPriceHidden = row.querySelector('.total-price-hidden');
 
         let quantity = parseInt(quantityInput.value);
         let price = parseFloat(priceInput.value);
+        let totalPrice = price * quantity;
 
         if(!isNaN(quantity) && !isNaN(price)) {
             let totalPrice = quantity * price;
             totalPriceInput.value = totalPrice.toFixed(2);
+            totalPriceHidden.value = totalPrice.toFixed(2);
+
         } else {
             totalPriceInput.value = 0;
         }
     }
+
+    function filterServices(input) {
+    let dataList = document.getElementById("serviceList");
+    let options = dataList.getElementsByTagName("option");
+    let filter = input.value.toLowerCase();
+
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let serviceName = option.value.toLowerCase();
+        if (serviceName.indexOf(filter) > -1) {
+            option.style.display = "";
+        } else {
+            option.style.display = "none";
+        }
+    }
+}
+
 </script>
 @endpush
 

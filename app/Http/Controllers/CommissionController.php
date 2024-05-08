@@ -52,10 +52,12 @@ class CommissionController extends Controller
         $installmentId = $request->installment_id;
         $installment = Installment::findOrFail($installmentId);
         $invoiceId = $installment->invoice->id;
-
-        foreach ($request->commissions as $commissionData) {
+        
+        dd($request->services);
+        foreach ($request->services as $service) {
 
             $commission = new Commission();
+            
             $commission->price = $commissionData['price'];
             $commission->installment_id = $installmentId;
 

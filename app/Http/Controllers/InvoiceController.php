@@ -53,11 +53,6 @@ class InvoiceController extends Controller
     {
         $data = $request->all();
 
-        $totalQuantity = 0;
-        $totalPrice = 0;
-
-        // recupero i dati del cliente e del consulente di riferimento
-
         // crea nuova fattura
         $invoice = new Invoice();
         $invoice -> client_id = $data['client'];
@@ -67,15 +62,19 @@ class InvoiceController extends Controller
 
         $consultantId = $invoice->client->consultant_id;
 
+        $totalQuantity = 0;
+        $totalPrice = 0;
+
         // ciclo foreach per ogni row di servizi presente
         foreach ($request->services_quantity as $index => $quantity) {
 
-            $pricePerUnit = $request -> price[$index] / $quantity;
+            $pricePerUnit = $request -> total_price[$index] / $quantity;
+            $serviceId = $request->service_id[$index];
 
             for ($i = 0; $i < $quantity; $i++) {
-
+                
                 $serviceSold = new ServiceSold();
-                $serviceSold->service_id = $request->service_id[$index];
+                $serviceSold->service_id = $serviceId;
                 $serviceSold->invoice_id = $invoice->id;
                 $serviceSold->price = $pricePerUnit;
                 $serviceSold->issue_date = $request->invoice_date;
@@ -83,10 +82,11 @@ class InvoiceController extends Controller
                 $serviceSold->save();
 
                 $totalPrice += $pricePerUnit;
+                
             }
 
             $totalQuantity += $quantity;
-
+            
         }
 
         $invoice->services_quantity = $totalQuantity;
