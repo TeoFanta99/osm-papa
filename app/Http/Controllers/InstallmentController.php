@@ -15,11 +15,11 @@ class InstallmentController extends Controller
      */
     public function index($id)
     {
-        $invoice = Invoice::find($id);
-        $installment = Installment :: find($id);
-        $installments = Installment::where('invoice_id', $id)->get();
+        // $invoice = Invoice::find($id);
+        // $installment = Installment :: find($id);
+        // $installments = Installment::where('invoice_id', $id)->get();
 
-        return view('pages.createInstallments', compact('installments', 'invoice', 'installment'));
+        // return view('pages.newInstallments', compact('installments', 'invoice', 'installment'));
     }
 
     /**
@@ -40,29 +40,7 @@ class InstallmentController extends Controller
      */
     public function store(Request $request)
     {
-        // Valida i dati della richiesta
-        $validatedData = $request->validate([
-            'amount' => 'required|numeric',
-            'expire_date' => 'required|date',
-            'paid' => 'required|boolean',
-            'invoice_id' => 'required|numeric',
-        ]);
-
-        // recupera l'ID dell'invoice (invoice_id) dalla richiesta
-        $invoiceID = $request->invoice_id;
-
-        // crea nuova rata
-        $installment = new Installment();
-        $installment->amount = $request->amount;
-        $installment->expire_date = $request->expire_date;
-        $installment->paid = $request->paid;
-        $installment->invoice_id = $invoiceID;
-        
-        $installment->save();
-        
-        // Redirect alla pagina specifica della fattura
-        return redirect()->route('show.invoice', $invoiceID);
-
+       //
     }
 
     /**

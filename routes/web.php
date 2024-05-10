@@ -46,12 +46,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invoice/{id}', [InvoiceController :: class, 'show']) -> name('show.invoice');
     Route::put('/servicessold/update', [ServiceSoldController :: class, 'update']) -> name('update.servicesold');
-    Route::get('/commissions/create/{installment_id}', [CommissionController :: class, 'create']) -> name('create.newCommissions');
-    Route::post('/commissions/store', [CommissionController :: class, 'store']) -> name('store.commissions');
-    
-    Route::get('/installments/{id}', [InstallmentController :: class, 'index']) -> name('index.installments');
+
     Route::put('/update-installments/{invoice}', [InstallmentController::class, 'update'])->name('update.installments');
-    Route::post('/create-newInstallments', [InstallmentController :: class, 'store']) -> name('store.installments');
+
+    Route::get('/commissions/{installmentId}/edit', [CommissionController :: class, 'edit']) -> name('edit.commissions');
+    Route::put('/commissions/{installmentId}/update', [CommissionController::class, 'update'])->name('update.commissions');
 
 });
 

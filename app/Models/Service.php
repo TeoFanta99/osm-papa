@@ -22,8 +22,5 @@ class Service extends Model
         return $this -> hasMany(ServiceSold :: class);
     }
 
-    public function commissions()
-    {
-        return $this -> belongsToMany(Commission :: class);
-    }
+
 }

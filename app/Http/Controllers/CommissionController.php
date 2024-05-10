@@ -27,14 +27,7 @@ class CommissionController extends Controller
      */
     public function create($installment_id)
     {
-        // $consultants = Consultant :: all();
-
-        $installment = Installment::findOrFail($installment_id);
-        $invoice = $installment->invoice;
-        $servicesSold = ServiceSold::select('service_id')->where('invoice_id', $invoice->id)->groupBy('service_id')->get();
-        $consultants = Consultant :: all();
-
-        return view('pages.newCommissions', compact('installment', 'invoice', 'servicesSold', 'consultants'));
+        //
     }
 
     /**
@@ -45,38 +38,7 @@ class CommissionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'installment_id' => 'required|exists:installments,id',
-        ]);
-
-        $installmentId = $request->installment_id;
-        $installment = Installment::findOrFail($installmentId);
-        $invoiceId = $installment->invoice->id;
-        
-        dd($request->services);
-        foreach ($request->services as $service) {
-
-            $commission = new Commission();
-            
-            $commission->price = $commissionData['price'];
-            $commission->installment_id = $installmentId;
-
-            if (isset($commissionData['sold_by'])) {
-                $commission->sold_by = $commissionData['sold_by'];
-            }
-            if (isset($commissionData['delivered_by'])) {
-                $commission->delivered_by = $commissionData['delivered_by'];
-            }
-
-            $commission -> save();
-
-            if (isset($commissionData['services'])) {
-                $commission->services()->attach($commissionData['services']);
-            }
-        }
-
-        return redirect()->route('show.invoice', $invoiceId);
-
+        //
     }
 
     /**
@@ -96,9 +58,16 @@ class CommissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($installment_id)
     {
-        //
+        $installment = Installment::findOrFail($installment_id);
+        $commissions = Commission :: where('installment_id', $installment->id)->get();
+        $invoice = $installment->invoice;
+        $numberOfInstallments = $invoice->installments->count();
+        $servicesSold = $invoice->servicesSold;
+        $consultants = Consultant :: all();
+
+        return view('pages.editCommissions', compact('installment', 'invoice', 'servicesSold', 'consultants', 'commissions', 'numberOfInstallments'));
     }
 
     /**
@@ -110,7 +79,10 @@ class CommissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        
+
+        return redirect()->route('show.invoice', $invoice->id);
     }
 
     /**

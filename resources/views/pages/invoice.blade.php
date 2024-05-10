@@ -20,21 +20,25 @@
                                 <th class="border border-dark" style="background: gray; color: white">
                                     Servizio
                                 </th>
+                                <th class="border border-dark" style="background: gray; color: white">
+                                    Quantità
+                                </th>
                                 <th class="border border-dark text-center" style="background: gray; color: white">
-                                    Netto (€)
+                                    Totale netto
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="services-container">
                             @foreach ($servicesSold as $serviceSold)
-                            <input type="hidden" name="servicesSold[{{ $serviceSold->id }}][id]"
-                                value="{{ $serviceSold->id }}">
                             <tr class="service-row">
                                 <td class="border border-dark">
-                                    {{$serviceSold->service->name}}
+                                    {{$serviceSold[0]->service->name}}
                                 </td>
                                 <td class="border border-dark">
-                                    {{$serviceSold->price}}
+                                    {{$serviceSold->count()}}
+                                </td>
+                                <td class="border border-dark">
+                                    {{ number_format($serviceSold[0]->price * $serviceSold->count(), 2, ',', '.') }} €
                                 </td>
                                 {{-- <td class="border border-dark">
                                     <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
@@ -66,13 +70,15 @@
 
                         <div class="services-container">
                             @foreach ($servicesSold as $serviceSold)
-                            <input type="hidden" name="servicesSold[{{ $serviceSold->id }}][id]"
-                                value="{{ $serviceSold->id }}">
                             <div class="service-row">
                                 <div class="border border-dark p-4" style="background-color: white;">
-                                    Servizio: {{$serviceSold->service->name}}
+                                    Servizio: {{$serviceSold[0]->service->name}}
                                     <br><br>
-                                    Prezzo: {{$serviceSold->price}} €
+                                    Quantità: {{$serviceSold->count()}}
+                                    <br><br>
+                                    Totale netto: {{ number_format($serviceSold[0]->price * $serviceSold->count(), 2,
+                                    ',',
+                                    '.') }} €
                                     <br><br>
                                     {{-- Erogato da: <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
                                         class="delivered_by">
@@ -99,10 +105,10 @@
                     <form action="{{route('update.installments', $invoice->id)}}" method="POST" class="mb-4">
                         @csrf
                         @method('PUT')
-                        <button class="ms_button installmentsBtn" id="create-installments">
-                            <a href="{{route('index.installments', $invoice->id)}}">NUOVA
+                        {{-- <button class="ms_button installmentsBtn" id="create-installments">
+                            <a href="#">NUOVA
                                 RATA</a>
-                        </button>
+                        </button> --}}
                         <button class="ms_button mb-4 installmentsBtn" id="edit-installments">
                             <a href="#" onclick="return false;">MODIFICA PAGAMENTI</a>
                         </button>
@@ -114,8 +120,6 @@
                                 <div class="col-12 col-md-6 installment-card">
                                     <span><b>Rata n. {{ $loop->iteration }}</b></span>
                                     <br><br>
-                                    {{-- ID della rata: {{$installment->id}} (debug...)
-                                    <br><br> --}}
                                     {{-- PREZZO DELLA RATA --}}
                                     @php
                                     $imponibile = $installment->amount;
@@ -136,7 +140,6 @@
                                         name="installments[{{ $installment->id }}][amount]"
                                         id="amount_{{ $installment->id }}" value="{{$installment->amount}}">
                                     <br><br><br>
-
 
                                     {{-- SCADENZA DELLA RATA --}}
                                     <label for="expire_date_{{ $installment->id }}">Data di scadenza: </label>
@@ -170,75 +173,46 @@
                                     <span><b>Provvigioni</b></span>
 
                                     <a class="ms_button mb-4 commissionsBtn mx-2"
-                                        href="{{route('create.newCommissions', ['installment_id' => $installment->id])}}">AGGIUNGI
+                                        href="{{route('edit.commissions', $installment->id)}}">MODIFICA
                                     </a>
-
-                                    <a class="ms_button mb-4 commissionsBtn mx-2" href="#">MODIFICA
-                                    </a>
-                                    <br>
-                                    <ul class="mt-3" style="padding-left: 0px">
-                                        @php
-                                        $commissionTotal = 0;
-                                        @endphp
+                                    <br><br>
+                                    <ul>
                                         @foreach ($installment->commissions as $commission)
-                                        <ul class="border border-2 border-primary rounded">
-                                            <li>Totale: {{ $commission->price }} €</li>
-                                            <li>@if (!$commission->sold_by) Nessun consulente
-                                                @else
-                                                @php
-                                                $consultant = $consultants->firstWhere('id', $commission->sold_by);
-                                                @endphp
-                                                Venditore: {{$consultant->name}} {{$consultant->lastname}}
-                                                @endif
-                                            </li>
-                                            <li>@if (!$commission->delivered_by) Nessun consulente
-                                                @else
-                                                @php
-                                                $consultant = $consultants->firstWhere('id', $commission->delivered_by);
-                                                @endphp
-                                                Erogatore: {{$consultant->name}} {{$consultant->lastname}}
-                                                @endif
-                                            </li>
-                                            <li>
-                                                Servizi:
-                                                <ul>
-                                                    @for ($i = 0; $i < $commission->services->count(); $i++)
-                                                        <li>{{$commission->services[$i]->name}}</li>
-                                                        @endfor
-                                                </ul>
-                                            </li>
-                                        </ul>
 
                                         @php
-                                        $commissionTotal += $commission->price;
-                                        $commissionTotal = number_format($commissionTotal, 2, '.', '');
+                                        $price = $serviceSold->first()->price / $invoice->installments->count();
+                                        $priceWithDecimals = number_format($price, 2);
                                         @endphp
-                                    </ul>
 
-                                    @endforeach
-                                    </ul>
 
-                                    @php
-                                    $imponibile = $installment->amount;
-                                    $iva = $imponibile * 0.22;
-                                    $totale = $imponibile + $iva;
-                                    @endphp
-
-                                    @if ($commissionTotal == 0)
-                                    @elseif ($commissionTotal != $imponibile)
-                                    <div class="alert alert-danger mt-3" role="alert">
-                                        Netto rata: {{$imponibile}} €
+                                        <li>Servizio: {{$commission->serviceId->name}}</li>
+                                        <li>Totale:
+                                            @if ($commission->price)
+                                            {{$priceWithDecimals}} €
+                                            @else
+                                            0 €
+                                            @endif
+                                        </li>
+                                        <li>Venditore:
+                                            @if($commission->soldBy)
+                                            {{$commission->soldBy->name}} {{$commission->soldBy->lastname}}
+                                            @else
+                                            Nessuno
+                                            @endif
+                                        </li>
+                                        <li>Erogatore:
+                                            @if($commission->deliveredBy)
+                                            {{$commission->deliveredBy->name}} {{$commission->deliveredBy->lastname}}
+                                            @else
+                                            Nessuno
+                                            @endif
+                                        </li>
                                         <br>
-                                        Somma provvigioni: {{$commissionTotal}} €
-                                        <br><br>
-                                        Correggere la differenza
-                                    </div>
-                                    @endif
-
+                                        @endforeach
+                                    </ul>
 
                                 </div>
                             </div>
-
                             @endforeach
                         </div>
                     </form>

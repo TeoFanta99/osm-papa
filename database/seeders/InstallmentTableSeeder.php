@@ -59,17 +59,24 @@ class InstallmentTableSeeder extends Seeder
 
                 $servicesSold = ServiceSold :: where('invoice_id', $installment->invoice_id)->get();
                 
+                foreach ($servicesSold as $serviceSold) {
+                    Commission::create([
+                        'service_id' => $serviceSold->service_id,
+                        'installment_id' => $installment->id,
+                        'price' => $serviceSold->price,
+                        'sold_by' => $serviceSold->sold_by,
+                        'delivered_by' => $serviceSold->delivered_by,
+                    ]);
+                }
+                
+
                 $serviceIds = $servicesSold->pluck('service_id')->toArray();
 
                 $randomServiceId = $serviceIds[array_rand($serviceIds)];
 
                 $randomService = Service :: findOrFail($randomServiceId)->name;
 
-                // Commission :: factory()->count($installmentsNumber)->create([
-                // 'installment_id' => $installment->id,
-                // 'price' => $currentAmount / $installmentsNumber,
-                // 'service' => $randomService
-                // ]);
+                
             }
         });
     }

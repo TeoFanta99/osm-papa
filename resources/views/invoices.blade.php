@@ -7,7 +7,7 @@
     <h2>Tutte le fatture</h2>
 
 
-    <div class="ms_container gg" style="width: 98%; margin: 0 auto">
+    <div class="ms_container" style="width: 98%; margin: 0 auto">
         <div class="headerRow">
             <div class="col_id border border-dark" style="display: flex; align-items: center; justify-content: center">#
             </div>
@@ -104,23 +104,30 @@
 
                 {{-- SERVIZI --}}
                 <div class="col_services border border-dark">
-                    @php
 
-                    @endphp
                     @foreach ($groupedServices as $serviceId => $services)
 
                     @php
-                    $serviceName = $services[0]->service->name;
-                    $servicePrice = $services[0]->price;
+                    // dd($services->first()->service->name);
+                    $serviceName = $services->first()->service->name;
+                    $servicePrice = $services->first()->price;
                     $serviceQuantity = $services->count();
                     $totalPricePerService = number_format($servicePrice * $serviceQuantity, 2, '.', '');
                     @endphp
 
                     <div style="display: flex;">
-                        <div class="col-6" style="border: 1px solid lightgray">{{$serviceName}}</div>
-                        <div class="col-1" style="border: 1px solid lightgray">{{$serviceQuantity}}</div>
-                        <div class="col-2" style="border: 1px solid lightgray">{{$servicePrice}}</div>
-                        <div class="col-3" style="border: 1px solid lightgray">{{$totalPricePerService}}</div>
+                        <div class="col-6" style="border: 1px solid lightgray">
+                            {{$serviceName}}
+                        </div>
+                        <div class="col-1" style="border: 1px solid lightgray">
+                            {{$serviceQuantity}}
+                        </div>
+                        <div class="col-2" style="border: 1px solid lightgray">
+                            {{$servicePrice}}
+                        </div>
+                        <div class="col-3" style="border: 1px solid lightgray">
+                            {{$totalPricePerService}}
+                        </div>
                     </div>
                     @endforeach
                 </div>

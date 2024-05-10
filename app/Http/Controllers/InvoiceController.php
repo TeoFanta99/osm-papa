@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Service;
 use App\Models\ServiceSold;
 use App\Models\Installment;
+use App\Models\Commission;
 
 class InvoiceController extends Controller
 {
@@ -21,12 +22,11 @@ class InvoiceController extends Controller
     {
         // recupera le fatture e le ordina per id decrescente
         $invoices = Invoice :: orderBy('id', 'desc')->get();
-
         $consultants = Consultant :: all();
-
         $servicesSold = ServiceSold :: all();
+        $services = Service :: all();
 
-        return view ('invoices', compact('invoices', 'consultants','servicesSold'));
+        return view ('invoices', compact('invoices', 'consultants','servicesSold', 'services'));
     }
 
     /**
@@ -64,6 +64,7 @@ class InvoiceController extends Controller
 
         $totalQuantity = 0;
         $totalPrice = 0;
+        $servicesData = [];
 
         // ciclo foreach per ogni row di servizi presente
         foreach ($request->services_quantity as $index => $quantity) {
@@ -71,7 +72,7 @@ class InvoiceController extends Controller
             $pricePerUnit = $request -> total_price[$index] / $quantity;
             $serviceId = $request->service_id[$index];
 
-            for ($i = 0; $i < $quantity; $i++) {
+            for ($x = 0; $x < $quantity; $x++) {
                 
                 $serviceSold = new ServiceSold();
                 $serviceSold->service_id = $serviceId;
@@ -82,10 +83,15 @@ class InvoiceController extends Controller
                 $serviceSold->save();
 
                 $totalPrice += $pricePerUnit;
-                
             }
 
             $totalQuantity += $quantity;
+
+            $servicesData[] = [
+                'service_id' => $serviceId,
+                'quantity' => $quantity,
+                'total_price' => $request->total_price[$index]
+            ];
             
         }
 
@@ -94,16 +100,37 @@ class InvoiceController extends Controller
         $invoice->save();
 
 
+        $numberOfInstallments = $request->numberOfInstallments;
 
-        // Creazione della nuova rata associata alla fattura
-        $installment = new Installment();
-        $installment->invoice_id = $invoice->id; 
-        $installment->amount = $invoice -> price; 
-        $installment->expire_date = $request->invoice_date;
-        $installment->paid = false;
-        $installment->save();
+        foreach ($servicesData as $serviceData) {
+            $serviceId = $serviceData['service_id'];
+            $quantity = $serviceData['quantity'];
+            $totalPricePerUnit = $serviceData['total_price'];
+
         
-        return redirect() -> route('index.invoices')->with('success', 'Fattura e rata create con successo!');
+            for($i = 0; $i < $numberOfInstallments; $i++) {
+                $installment = new Installment();
+                $installment->paid = false;
+                $installment->invoice_id = $invoice-> id;
+                $installment->amount = $request->amount[$i];
+                $installment->expire_date = $request->expire_date[$i];
+                $installment->save();
+
+                $commissionPerService = $totalPricePerUnit / $numberOfInstallments;
+                
+                for($j = 0; $j < $quantity; $j++) {
+                    
+                    $commission = new Commission();
+                    $commission->price = $commissionPerService;
+                    $commission->installment_id = $installment->id;
+                    $commission->service_id = $serviceId;
+                    $commission->sold_by = $consultantId;
+                    $commission->delivered_by = $consultantId;
+                    $commission->save();
+                }
+            }
+        }
+        return redirect() -> route('index.invoices', $invoice->id)->with('success', 'Fattura e rata create con successo!');
     }
 
     /**
@@ -116,7 +143,7 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice :: find($id);
         $installments = Installment :: where ('invoice_id', $invoice->id) -> get();
-        $servicesSold = ServiceSold :: where ('invoice_id', $invoice->id) -> get();
+        $servicesSold = ServiceSold :: where ('invoice_id', $invoice->id) -> get()->groupBy('service_id');
         $consultants = Consultant :: all();
         
         $client = $invoice->client;

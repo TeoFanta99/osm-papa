@@ -7,7 +7,7 @@
     <div class="container_macro">
         <div class="section-container">
             <div class="ms_card card p-3">
-                <h3 class="mb-5">Crea nuove provvigioni per la rata n. {{$installment->id}}</h3>
+                <h3 class="mb-5">Gestisci le provvigioni per la rata n. {{$installment->id}}</h3>
 
                 @php
                 $installmentNet = $installment->amount;
@@ -19,9 +19,10 @@
                     {{$installmentNet}} € (IVA esclusa).
                 </span>
 
-                <form method="POST" action="{{route('store.commissions')}}" enctype="multipart/form-data">
+                <form method="POST" action="{{route('update.commissions', $installment->id)}}"
+                    enctype="multipart/form-data">
                     @csrf
-                    @method("POST")
+                    @method("PUT")
 
                     <input type="hidden" name="installment_id" value="{{ $installment->id }}">
 
@@ -31,34 +32,47 @@
                         <thead>
                             <tr>
                                 <th class="border border-dark headerRow">Servizio</th>
-                                <th class="border border-dark headerRow">Prezzo</th>
+                                <th class="border border-dark headerRow">Prezzo (IVA esclusa)</th>
                                 <th class="border border-dark headerRow">VSS</th>
                                 <th class="border border-dark headerRow">VSD</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($servicesSold as $serviceSold)
+                            @php
+                            $price = $serviceSold->price / $numberOfInstallments;
+                            $priceWithDecimals = number_format($price, 2);
+                            @endphp
                             <tr>
                                 <td class="border border-dark">
-                                    <label
-                                        for="service{{$serviceSold->service->id}}_${i}">{{$serviceSold->service->name}}</label>
+                                    <input readonly type="text" name="service_id[{{ $serviceSold->service->id }}]"
+                                        value="{{ $serviceSold->service->name }}" style="width: 100%">
                                 </td>
                                 <td class="border border-dark">
-                                    <input type="number" name="price[{{ $loop->index }}]">
+                                    <input type="number" name="price[{{$serviceSold->service->id}}]"
+                                        value="{{$priceWithDecimals}}">
                                 </td>
                                 <td class="border border-dark">
-                                    <select name="sold_by[{{ $loop->index }}]">
+                                    <select name="sold_by[{{$serviceSold->service->id}}]">
                                         <option value="">Nessuno</option>
                                         @foreach($consultants as $consultant)
-                                        <option>{{$consultant->name}} {{$consultant->lastname}}</option>
+                                        <option value="{{$consultant->id}}" @if($consultant->id ==
+                                            $invoice->client->consultant_id) selected @endif
+                                            >
+                                            {{$consultant->name}} {{$consultant->lastname}}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="border border-dark">
-                                    <select name="delivered_by[{{ $loop->index }}]">
+                                    <select name="delivered_by[{{$serviceSold->service->id}}]">
                                         <option value="">Nessuno</option>
                                         @foreach($consultants as $consultant)
-                                        <option>{{$consultant->name}} {{$consultant->lastname}}</option>
+                                        <option value="{{$consultant->id}}" @if($consultant->id ==
+                                            $invoice->client->consultant_id) selected @endif>
+                                            {{$consultant->name}}
+                                            {{$consultant->lastname}}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -68,8 +82,11 @@
                     </table>
 
 
-                    <input class="mt-5 createBtn" type="submit" value="CREA">
+                    <input class="mt-5 updateBtn" type="submit" value="AGGIORNA">
                 </form>
+
+                <br><br>
+
 
                 <a class="comeBackBtn" href="{{route('show.invoice', $invoice->id)}}">
                     <button class="ms_button">Indietro</button>
