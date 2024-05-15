@@ -80,7 +80,15 @@ class CommissionController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        
+
+        foreach ($data as $serviceSold) {
+            dd($data);
+        }
+        $service = $request->service_id;
+        $price = $request->price;
+        $soldBy = $request->sold_by;
+        $deliveredBy = $request->delivered_by;
+
 
         return redirect()->route('show.invoice', $invoice->id);
     }

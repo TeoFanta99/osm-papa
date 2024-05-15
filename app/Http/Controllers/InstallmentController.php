@@ -15,11 +15,7 @@ class InstallmentController extends Controller
      */
     public function index($id)
     {
-        // $invoice = Invoice::find($id);
-        // $installment = Installment :: find($id);
-        // $installments = Installment::where('invoice_id', $id)->get();
-
-        // return view('pages.newInstallments', compact('installments', 'invoice', 'installment'));
+        //
     }
 
     /**

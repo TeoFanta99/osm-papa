@@ -14,16 +14,16 @@ class Invoice extends Model
 
     public function client()
     {
-        return $this -> belongsTo(Client :: class);
+        return $this->belongsTo(Client::class);
     }
 
     public function installments()
     {
-        return $this -> hasMany(Installment :: class);
+        return $this->hasMany(Installment::class);
     }
 
     public function servicesSold()
     {
-        return $this -> hasMany(ServiceSold :: class);
+        return $this->hasMany(ServiceSold::class);
     }
 }

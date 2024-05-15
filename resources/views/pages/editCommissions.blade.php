@@ -7,7 +7,7 @@
     <div class="container_macro">
         <div class="section-container">
             <div class="ms_card card p-3">
-                <h3 class="mb-5">Gestisci le provvigioni per la rata n. {{$installment->id}}</h3>
+                <h3 class="mb-5">Gestisci i servizi per la rata n. {{$installment->id}}</h3>
 
                 @php
                 $installmentNet = $installment->amount;
@@ -32,28 +32,34 @@
                         <thead>
                             <tr>
                                 <th class="border border-dark headerRow">Servizio</th>
-                                <th class="border border-dark headerRow">Prezzo (IVA esclusa)</th>
+                                <th class="border border-dark headerRow hoverable">Prezzo del servizio
+                                    <div class="hover-note">Prezzo del servizio sul quale verrà calcolata la
+                                        provvigione. Il prezzo è da intendersi IVA esclusa.
+                                        <br><br>
+                                        NON È IL VALORE DELLA PROVVIGIONE
+                                    </div>
+                                </th>
                                 <th class="border border-dark headerRow">VSS</th>
                                 <th class="border border-dark headerRow">VSD</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($servicesSold as $serviceSold)
+                            @foreach ($servicesSold as $index => $serviceSold)
                             @php
                             $price = $serviceSold->price / $numberOfInstallments;
-                            $priceWithDecimals = number_format($price, 2);
+                            $priceWithDecimals = number_format($price, 2, ',', '.');
                             @endphp
                             <tr>
                                 <td class="border border-dark">
-                                    <input readonly type="text" name="service_id[{{ $serviceSold->service->id }}]"
+                                    <input readonly type="text" name="service_id[{{ $index }}]"
                                         value="{{ $serviceSold->service->name }}" style="width: 100%">
                                 </td>
                                 <td class="border border-dark">
-                                    <input type="number" name="price[{{$serviceSold->service->id}}]"
-                                        value="{{$priceWithDecimals}}">
+                                    <input type="text" name="price[{{$index}}]" value="{{$priceWithDecimals}}"
+                                        class="price-input">
                                 </td>
                                 <td class="border border-dark">
-                                    <select name="sold_by[{{$serviceSold->service->id}}]">
+                                    <select name="sold_by[{{$index}}]">
                                         <option value="">Nessuno</option>
                                         @foreach($consultants as $consultant)
                                         <option value="{{$consultant->id}}" @if($consultant->id ==
@@ -65,7 +71,7 @@
                                     </select>
                                 </td>
                                 <td class="border border-dark">
-                                    <select name="delivered_by[{{$serviceSold->service->id}}]">
+                                    <select name="delivered_by[{{$index}}]">
                                         <option value="">Nessuno</option>
                                         @foreach($consultants as $consultant)
                                         <option value="{{$consultant->id}}" @if($consultant->id ==
@@ -97,6 +103,21 @@
 </div>
 
 @endsection
+
+<script>
+    let priceInputs = document.querySelectorAll('.price-input');
+    priceInputs.forEach(function(input) {
+        input.addEventListener('input', function(event) {
+            let value = event.target.value;
+            if (isNaN(value)) {
+                event.target.parentNode.querySelector('.error-message').style.display = 'block';
+            } else {
+                event.target.parentNode.querySelector('.error-message').style.display = 'none';
+            }
+        });
+    });
+</script>
+
 
 
 <style>
@@ -130,5 +151,28 @@
         background-color: gray;
         color: white;
         font-weight: bold;
+    }
+
+    .hoverable {
+        position: relative;
+    }
+
+    .hover-note {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-10%);
+        background-color: #ffef5d;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        color: black;
+    }
+
+    .hoverable:hover .hover-note {
+        display: block;
     }
 </style>

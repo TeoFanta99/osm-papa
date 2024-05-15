@@ -170,43 +170,45 @@
 
                                 {{-- SEZIONE PROVVIGIONI --}}
                                 <div class="col-12 col-md-6" style="margin-top: 15px; padding: 10px">
-                                    <span><b>Provvigioni</b></span>
+                                    <span><b>Servizi</b></span>
 
                                     <a class="ms_button mb-4 commissionsBtn mx-2"
                                         href="{{route('edit.commissions', $installment->id)}}">MODIFICA
                                     </a>
                                     <br><br>
                                     <ul>
-                                        @foreach ($installment->commissions as $commission)
+                                        @foreach ($installment->commissions as $index => $commission)
 
                                         @php
+                                        // dd($commission);
                                         $price = $serviceSold->first()->price / $invoice->installments->count();
-                                        $priceWithDecimals = number_format($price, 2);
+                                        $priceWithDecimals = number_format($price, 2, ',', '.');
                                         @endphp
 
 
                                         <li>Servizio: {{$commission->serviceId->name}}</li>
-                                        <li>Totale:
+                                        <li>Totale provvigione:
                                             @if ($commission->price)
-                                            {{$priceWithDecimals}} €
+                                            {{$commission->price}} €
                                             @else
                                             0 €
                                             @endif
                                         </li>
-                                        <li>Venditore:
-                                            @if($commission->soldBy)
-                                            {{$commission->soldBy->name}} {{$commission->soldBy->lastname}}
-                                            @else
-                                            Nessuno
-                                            @endif
+                                        @if($commission->soldBy)
+                                        <li>
+                                            Venditore: {{$commission->soldBy->name}}
+                                            {{$commission->soldBy->lastname}}
                                         </li>
-                                        <li>Erogatore:
-                                            @if($commission->deliveredBy)
-                                            {{$commission->deliveredBy->name}} {{$commission->deliveredBy->lastname}}
-                                            @else
-                                            Nessuno
-                                            @endif
+                                        @endif
+
+                                        @if($commission->deliveredBy)
+                                        <li>
+                                            Erogatore: {{$commission->deliveredBy->name}}
+                                            {{$commission->deliveredBy->lastname}}
                                         </li>
+                                        @endif
+
+
                                         <br>
                                         @endforeach
                                     </ul>
