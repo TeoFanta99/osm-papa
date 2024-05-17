@@ -12,11 +12,6 @@ class Service extends Model
 {
     use HasFactory;
 
-    public function clients()
-    {
-        return $this -> belongsToMany(Client :: class);
-    }
-
     public function servicesSold()
     {
         return $this -> hasMany(ServiceSold :: class);

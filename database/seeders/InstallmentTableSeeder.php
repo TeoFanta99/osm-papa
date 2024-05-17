@@ -61,11 +61,7 @@ class InstallmentTableSeeder extends Seeder
                 
                 foreach ($servicesSold as $serviceSold) {
                     Commission::create([
-                        'service_id' => $serviceSold->service_id,
-                        'installment_id' => $installment->id,
                         'price' => $serviceSold->price,
-                        'sold_by' => $serviceSold->sold_by,
-                        'delivered_by' => $serviceSold->delivered_by,
                     ]);
                 }
                 

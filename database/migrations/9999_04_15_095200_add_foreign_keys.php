@@ -36,8 +36,8 @@ return new class extends Migration
         });
 
         Schema::table('commissions', function (Blueprint $table) {
-            $table->foreignId('installment_id')->nullable()->constrained('installments');
-            $table->foreignId('service_id')->nullable()->constrained('services');
+            $table->foreignId('consultant_id')->nullable()->constrained('consultants');
+            $table->foreignId('commission_type_id')->nullable()->constrained('commission_types');
         });
     }
 
@@ -78,10 +78,10 @@ return new class extends Migration
         });
 
         Schema::table('commissions', function (Blueprint $table) {
-            $table->dropForeign(['installment_id']);
-            $table->dropColumn(['installment_id']);
-            $table->dropForeign(['service_id']);
-            $table->dropColumn(['service_id']);
+            $table->dropForeign(['consultant_id']);
+            $table->dropColumn(['consultant_id']);
+            $table->dropForeign(['commission_type_id']);
+            $table->dropColumn(['commission_type_id']);
         });
     }
 };

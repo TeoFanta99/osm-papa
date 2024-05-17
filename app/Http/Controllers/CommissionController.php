@@ -61,13 +61,13 @@ class CommissionController extends Controller
     public function edit($installment_id)
     {
         $installment = Installment::findOrFail($installment_id);
-        $commissions = Commission :: where('installment_id', $installment->id)->get();
+        // $commissions = Commission :: where('installment_id', $installment->id)->get();
         $invoice = $installment->invoice;
         $numberOfInstallments = $invoice->installments->count();
         $servicesSold = $invoice->servicesSold;
         $consultants = Consultant :: all();
 
-        return view('pages.editCommissions', compact('installment', 'invoice', 'servicesSold', 'consultants', 'commissions', 'numberOfInstallments'));
+        return view('pages.editCommissions', compact('installment', 'invoice', 'servicesSold', 'consultants', 'numberOfInstallments'));
     }
 
     /**

@@ -13,7 +13,10 @@
 
                     <h2>FATTURA N° {{$invoice->id}}</h2>
                     <br>
-                    {{-- TABELLA EDITABILE (COMPUTER)--}}
+                    @php
+                    $groupedServices = $servicesSold->groupBy('service_id');
+                    @endphp
+                    {{-- TABELLA PER COMPUTER --}}
                     <table class="desktopTable table mb-3">
                         <thead>
                             <tr>
@@ -29,16 +32,22 @@
                             </tr>
                         </thead>
                         <tbody class="services-container">
-                            @foreach ($servicesSold as $serviceSold)
+                            @foreach ($groupedServices as $serviceId => $arrayOfServices)
+                            {{-- @php
+                            dd($arrayOfServices);
+                            @endphp --}}
                             <tr class="service-row">
                                 <td class="border border-dark">
-                                    {{$serviceSold[0]->service->name}}
+                                    {{$arrayOfServices->first()->service->name}}
                                 </td>
                                 <td class="border border-dark">
-                                    {{$serviceSold->count()}}
+                                    {{$arrayOfServices->count()}}
                                 </td>
                                 <td class="border border-dark">
-                                    {{ number_format($serviceSold[0]->price * $serviceSold->count(), 2, ',', '.') }} €
+                                    {{ number_format($arrayOfServices->first()->price * $arrayOfServices->count(), 2,
+                                    ',',
+                                    '.')
+                                    }} €
                                 </td>
                                 {{-- <td class="border border-dark">
                                     <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
@@ -58,7 +67,7 @@
                         </tbody>
                     </table>
 
-                    {{-- TABELLA EDITABILE (SMARTPHONE) --}}
+                    {{-- TABELLA PER SMARTPHONE --}}
                     <div class="phoneTable table mb-3">
 
                         <div class="border border-dark"
@@ -69,16 +78,18 @@
                         </div>
 
                         <div class="services-container">
-                            @foreach ($servicesSold as $serviceSold)
+                            @foreach ($groupedServices as $serviceId => $arrayOfServices)
                             <div class="service-row">
                                 <div class="border border-dark p-4" style="background-color: white;">
-                                    Servizio: {{$serviceSold[0]->service->name}}
+                                    Servizio: {{$arrayOfServices->first()->service->name}}
                                     <br><br>
-                                    Quantità: {{$serviceSold->count()}}
+                                    Quantità: {{$arrayOfServices->count()}}
                                     <br><br>
-                                    Totale netto: {{ number_format($serviceSold[0]->price * $serviceSold->count(), 2,
+                                    Totale netto: {{ number_format($arrayOfServices->first()->price *
+                                    $arrayOfServices->count(), 2,
                                     ',',
-                                    '.') }} €
+                                    '.')
+                                    }} €
                                     <br><br>
                                     {{-- Erogato da: <select name="servicesSold[{{ $serviceSold->id }}][delivered_by]"
                                         class="delivered_by">
@@ -97,6 +108,16 @@
                             @endforeach
                         </div>
                     </div>
+
+                    @php
+                    $nettoFattura = $invoice->price;
+                    $ivaFattura = $nettoFattura * 22 / 100;
+                    $lordoFattura = $nettoFattura + $ivaFattura;
+                    @endphp
+
+                    <span>Totale Netto Fattura: {{$nettoFattura}} €</span><br>
+                    <span>IVA: {{$ivaFattura}} €</span><br>
+                    <span>Totale Fattura: {{$lordoFattura}} €</span>
                 </form>
             </div>
 
@@ -110,14 +131,14 @@
                                 RATA</a>
                         </button> --}}
                         <button class="ms_button mb-4 installmentsBtn" id="edit-installments">
-                            <a href="#" onclick="return false;">MODIFICA PAGAMENTI</a>
+                            <a href="#" onclick="return false;">MODIFICA PAGAMENTI/PROVVIGIONI</a>
                         </button>
                         <input id="updateInstallmentsBtn" class="saveBtn" type="submit" value="SALVA">
 
                         <div class="form-container row" style="padding: 10px;">
                             @foreach ($installments as $installment)
                             <div class="col-12 mt-4" style="display:flex; flex-wrap: wrap; border: 1px solid black;">
-                                <div class="col-12 col-md-6 installment-card">
+                                <div class="col-12 installment-card">
                                     <span><b>Rata n. {{ $loop->iteration }}</b></span>
                                     <br><br>
                                     {{-- PREZZO DELLA RATA --}}
@@ -167,51 +188,82 @@
                                 </div>
 
 
+                                {{-- SEZIONE SERVIZI --}}
+                                <div class="col-12" style="margin-top: 15px; padding: 10px">
+                                    <table style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="border border-dark headerRow">Servizio</th>
+                                                <th class="border border-dark headerRow">Prezzo del servizio</th>
+                                                <th class="border border-dark headerRow">VSS</th>
+                                                <th class="border border-dark headerRow">VSD</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($groupedServices as $serviceId => $arrayOfServices)
+                                            @php
 
-                                {{-- SEZIONE PROVVIGIONI --}}
-                                <div class="col-12 col-md-6" style="margin-top: 15px; padding: 10px">
-                                    <span><b>Servizi</b></span>
+                                            $pricePerService = 0;
+                                            for ($i=0; $i < $arrayOfServices->count(); $i++) { $pricePerService
+                                                +=$arrayOfServices[$i]->price;};
 
-                                    <a class="ms_button mb-4 commissionsBtn mx-2"
-                                        href="{{route('edit.commissions', $installment->id)}}">MODIFICA
-                                    </a>
-                                    <br><br>
-                                    <ul>
-                                        @foreach ($installment->commissions as $index => $commission)
-
-                                        @php
-                                        // dd($commission);
-                                        $price = $serviceSold->first()->price / $invoice->installments->count();
-                                        $priceWithDecimals = number_format($price, 2, ',', '.');
-                                        @endphp
-
-
-                                        <li>Servizio: {{$commission->serviceId->name}}</li>
-                                        <li>Totale provvigione:
-                                            @if ($commission->price)
-                                            {{$commission->price}} €
-                                            @else
-                                            0 €
-                                            @endif
-                                        </li>
-                                        @if($commission->soldBy)
-                                        <li>
-                                            Venditore: {{$commission->soldBy->name}}
-                                            {{$commission->soldBy->lastname}}
-                                        </li>
-                                        @endif
-
-                                        @if($commission->deliveredBy)
-                                        <li>
-                                            Erogatore: {{$commission->deliveredBy->name}}
-                                            {{$commission->deliveredBy->lastname}}
-                                        </li>
-                                        @endif
+                                                $price = $pricePerService / $numberOfInstallments;
+                                                $priceWithDecimals = number_format($price, 2, ',', '.');
 
 
-                                        <br>
-                                        @endforeach
-                                    </ul>
+                                                @endphp
+                                                <tr>
+                                                    <td class="border border-dark">
+                                                        <span>{{$arrayOfServices->first()->service->name}}</span>
+                                                        <input name="service_id[]" value="" style="display: none">
+                                                    </td>
+                                                    <td class="border border-dark">
+                                                        <span class="info-span"> {{$priceWithDecimals}} €</span>
+                                                        <input type="text" name="price[]" value="{{$priceWithDecimals}}"
+                                                            class="price-input info-input">
+                                                    </td>
+                                                    <td class="border border-dark">
+                                                        @foreach ($consultants as $consultant)
+                                                        @if ($consultant->id == $invoice->client->consultant_id)
+                                                        <span class="info-span">{{$consultant->name}}
+                                                            {{$consultant->lastname}}</span>
+                                                        @endif
+                                                        @endforeach
+                                                        <select name="commissions[]sold_by" style="display: none"
+                                                            class="info-input">
+                                                            <option value="">Nessuno</option>
+                                                            @foreach($consultants as $consultant)
+                                                            <option value="{{$consultant->id}}" @if($consultant->id ==
+                                                                $invoice->client->consultant_id) selected @endif
+                                                                >
+                                                                {{$consultant->name}} {{$consultant->lastname}}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td class="border border-dark">
+                                                        @foreach ($consultants as $consultant)
+                                                        @if ($consultant->id == $invoice->client->consultant_id)
+                                                        <span class="info-span">{{$consultant->name}}
+                                                            {{$consultant->lastname}}</span>
+                                                        @endif
+                                                        @endforeach
+                                                        <select name="commissions[]delivered_by" style="display: none"
+                                                            class="info-input">
+                                                            <option value="">Nessuno</option>
+                                                            @foreach($consultants as $consultant)
+                                                            <option value="{{$consultant->id}}" @if($consultant->id ==
+                                                                $invoice->client->consultant_id) selected @endif
+                                                                >
+                                                                {{$consultant->name}} {{$consultant->lastname}}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                        </tbody>
+                                    </table>
 
                                 </div>
                             </div>
@@ -241,6 +293,7 @@
             let installmentSpans = document.querySelectorAll('.info-span');
             let installmentInputs = document.querySelectorAll('.info-input');
             let updateInstallmentsBtn = document.getElementById('updateInstallmentsBtn');
+            let servicePriceSpans = document.querySelectorAll('.price-span');
             installmentSpans.forEach(function(span) {
                 span.style.display = 'none';
             });
@@ -248,6 +301,9 @@
                 input.style.display = 'inline-block';
             });
             updateInstallmentsBtn.style.display = 'inline-block';
+            servicePriceSpans.forEach(function(span) {
+                span.style.display = 'none';
+            })
         });
     });
 </script>
@@ -278,14 +334,14 @@
                 .installment-card {
                     cursor: pointer;
                     padding: 20px;
-
-                    .info-input {
-                        display: none;
-                        width: 70%
-                    }
                 }
             }
         }
+    }
+
+    .info-input {
+        display: none;
+        width: 70%
     }
 
     .saveBtnDiv {
@@ -341,6 +397,12 @@
 
     .installmentsBtn:hover {
         background-color: #35517e;
+    }
+
+    .headerRow {
+        background-color: gray;
+        color: white;
+        font-weight: bold;
     }
 
 

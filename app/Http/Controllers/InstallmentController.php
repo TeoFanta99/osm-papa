@@ -82,6 +82,8 @@ class InstallmentController extends Controller
             ]);
         }
 
+
+
         $invoice = Invoice::findOrFail($id);
 
         return redirect()->route('show.invoice', $invoice->id);

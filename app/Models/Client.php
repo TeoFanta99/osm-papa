@@ -17,11 +17,6 @@ class Client extends Model
         return $this -> belongsTo(Consultant :: class);
     }
 
-    public function services()
-    {
-        return $this -> belongsToMany(Service :: class);
-    }
-
     public function invoices()
     {
         return $this -> hasMany(Invoice :: class);

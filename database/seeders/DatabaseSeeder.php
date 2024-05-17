@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ClientTableSeeder :: class,
             ServiceTableSeeder :: class,
             InvoiceTableSeeder :: class,
+            CommissionTypeTableSeeder :: class,
             InstallmentTableSeeder :: class,
         ]);
     }

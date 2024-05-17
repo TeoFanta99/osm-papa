@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->decimal('price', 9, 2)->nullable();
             $table->dateTime('issue_date');
-            $table->string('delivered_by')->nullable();
-            $table->string('sold_by')->nullable();
             $table->timestamps();
         });
     }

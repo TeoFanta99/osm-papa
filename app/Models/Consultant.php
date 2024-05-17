@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Level;
-use App\Models\Client;
 
 class Consultant extends Model
 {
@@ -25,5 +22,10 @@ class Consultant extends Model
     public function clients()
     {
         return $this -> hasMany(Client :: class);
+    }
+
+    public function commissions()
+    {
+        return $this -> hasMany(Commission :: class);
     }
 }

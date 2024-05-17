@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Invoice;
-use App\Models\Commission;
 
 class Installment extends Model
 {
@@ -20,11 +18,5 @@ class Installment extends Model
     public function invoice()
     {
         return $this -> belongsTo(Invoice :: class);
-    }
-
-    public function commissions()
-    {
-        return $this -> hasMany(Commission :: class);
-    }
-    
+    }    
 }

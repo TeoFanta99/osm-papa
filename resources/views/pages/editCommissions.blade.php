@@ -146,33 +146,4 @@
         border: 1px solid black;
         padding: 10px;
     }
-
-    .headerRow {
-        background-color: gray;
-        color: white;
-        font-weight: bold;
-    }
-
-    .hoverable {
-        position: relative;
-    }
-
-    .hover-note {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-10%);
-        background-color: #ffef5d;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        color: black;
-    }
-
-    .hoverable:hover .hover-note {
-        display: block;
-    }
 </style>

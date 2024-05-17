@@ -93,35 +93,20 @@ class InvoiceController extends Controller
                 $serviceSold->invoice_id = $invoice->id;
                 $serviceSold->price = $pricePerUnit;
                 $serviceSold->issue_date = $request->invoice_date;
-                $serviceSold->delivered_by = $consultantId;
                 $serviceSold->save();
 
+                // creo 2 commissioni per ogni servizio venduto
+                $commission = new Commission();
+                $commission->price = $pricePerUnit * 15 / 100;
+                $commission->consultant_id = $consultantId;
+                $commission->commission_type_id = 1;
+                $commission->save();
 
-                $VSSPrice = $serviceSold->price * 15 / 100;
-                $VSDPrice = $serviceSold->price * 25 / 100;
-
-                $VSSPricePerInstallment = $VSSPrice / $numberOfInstallments;
-                $VSDPricePerInstallment = $VSDPrice / $numberOfInstallments;
-
-                foreach ($installments as $installment) {
-                    // Provvigione per il VSS
-                    $commission = new Commission();
-                    $commission->price = $VSSPricePerInstallment;
-                    $commission->installment_id = $installment->id;
-                    $commission->service_id = $serviceId;
-                    $commission->sold_by = $consultantId;
-                    $commission->delivered_by = null;
-                    $commission->save();
-
-                    // Provvigione per il VSD
-                    $commission = new Commission();
-                    $commission->price = $VSDPricePerInstallment;
-                    $commission->installment_id = $installment->id;
-                    $commission->service_id = $serviceId;
-                    $commission->sold_by = null;
-                    $commission->delivered_by = $consultantId;
-                    $commission->save();
-                }
+                $commission = new Commission();
+                $commission->price = $pricePerUnit * 20 / 100;
+                $commission->consultant_id = $consultantId;
+                $commission->commission_type_id = 1;
+                $commission->save();
 
                 $totalPrice += $pricePerUnit;
             }
@@ -146,15 +131,16 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $invoice = Invoice::find($id);
-        $installments = Installment::where('invoice_id', $invoice->id)->get();
-        $servicesSold = ServiceSold::where('invoice_id', $invoice->id)->get()->groupBy('service_id');
+        $servicesSold = ServiceSold::where('invoice_id', $invoice->id)->get(); // ->groupBy('service_id');
+        $installments = Installment::where('invoice_id', $invoice->id)->get();;
         $consultants = Consultant::all();
-
         $client = $invoice->client;
-        $consultant_id = $client ? $client->consultant_id : null;
-        $services = Service::all();
+        $numberOfInstallments = $installments->count();
 
-        return view('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'services', 'client', 'consultants', 'consultant_id'));
+        // $consultant_id = $client ? $client->consultant_id : null;
+        // $services = Service::all();
+
+        return view('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'client', 'consultants', 'numberOfInstallments'));
     }
 
     /**
