@@ -35,9 +35,19 @@ return new class extends Migration
             $table->foreignId('service_id')->nullable()->constrained('services');
         });
 
-        Schema::table('commissions', function (Blueprint $table) {
+        Schema::table('services_per_installment', function (Blueprint $table) {
+            $table->foreignId('installment_id')->nullable()->constrained('installments');
+            $table->foreignId('service_sold_id')->nullable()->constrained('services_sold');
+        });
+
+        Schema::table('vss_commissions', function (Blueprint $table) {
+            $table->foreignId('service_per_installment_id')->nullable()->constrained('services_per_installment');
             $table->foreignId('consultant_id')->nullable()->constrained('consultants');
-            $table->foreignId('commission_type_id')->nullable()->constrained('commission_types');
+        });
+
+        Schema::table('vsd_commissions', function (Blueprint $table) {
+            $table->foreignId('service_per_installment_id')->nullable()->constrained('services_per_installment');
+            $table->foreignId('consultant_id')->nullable()->constrained('consultants');
         });
     }
 
@@ -77,11 +87,25 @@ return new class extends Migration
             $table->dropColumn(['service_id']);
         });
 
-        Schema::table('commissions', function (Blueprint $table) {
+        Schema::table('services_per_installment', function (Blueprint $table) {
+            $table->dropForeign(['installment_id']);
+            $table->dropColumn(['installment_id']);
+            $table->dropForeign(['service_sold_id']);
+            $table->dropColumn(['service_sold_id']);
+        });
+
+        Schema::table('vss_commissions', function (Blueprint $table) {
+            $table->dropForeign(['service_per_installment_id']);
+            $table->dropColumn(['service_per_installment_id']);
             $table->dropForeign(['consultant_id']);
             $table->dropColumn(['consultant_id']);
-            $table->dropForeign(['commission_type_id']);
-            $table->dropColumn(['commission_type_id']);
+        });
+
+        Schema::table('vsd_commissions', function (Blueprint $table) {
+            $table->dropForeign(['service_per_installment_id']);
+            $table->dropColumn(['service_per_installment_id']);
+            $table->dropForeign(['consultant_id']);
+            $table->dropColumn(['consultant_id']);
         });
     }
 };

@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('vss_commissions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 9, 2) ->nullable();
-            $table->dateTime('invoice_date')->nullable();
-            $table->boolean('paid')->default(false);
+            $table->decimal('value', 9, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('vss_commissions');
     }
 };

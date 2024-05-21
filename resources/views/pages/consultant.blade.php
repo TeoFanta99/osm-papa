@@ -6,7 +6,7 @@
 
 <div class="main-content p-3">
     <h1 class="d-block">{{$consultant->name}} {{$consultant->lastname}}</h1>
-    <span><i><u>Consulente {{$consultant->level->title}}</u></i></span>
+    <span><i><u>Consulente {{$consultant->level->name}}</u></i></span>
     <br><br><br>
 
     {{-- LOGICA DI CREAZIONE MESE E ANNO CORRENTE --}}
@@ -22,64 +22,14 @@
     <br><br>
     <div>
 
-        {{-- VSS --}}
-        <div>
-            {{-- <span class="fs-4">Totale venduto (VSS): {{$totalVSS}} €</span> --}}
-            {{-- <ul>
-                @foreach ($invoices as $invoice) --}}
-
-                {{-- CALCOLA IL MESE CORRENTE --}}
-                {{-- @php
-                $invoiceMonth = Carbon\Carbon::parse($invoice->invoice_date)->format('m');
-                $currentMonth = Carbon\Carbon::now()->format('m');
-                @endphp
-
-                @if ($invoiceMonth == $currentMonth)
-                <li>
-                    {{$invoice->price}} €
-                    <br>
-                    {{$invoice->invoice_date}}
-                </li>
-                @endif
-                @endforeach
-            </ul> --}}
-        </div>
-
-        {{-- VSD --}}
-        <div>
-            {{-- <span class="fs-4">Totale erogato (VSD): {{$totalVSD}} €</span> --}}
-            {{-- <br><br>
-            <ul>
-                @foreach ($servicesSold as $serviceSold) --}}
-
-                {{-- CALCOLA IL MESE CORRENTE --}}
-                {{-- @php
-                $invoiceMonth = Carbon\Carbon::parse($serviceSold->issue_date)->format('m');
-                $currentMonth = Carbon\Carbon::now()->format('m');
-                @endphp
-
-                @if ($serviceSold->delivered_by == $consultant->id && $invoiceMonth == $currentMonth)
-                <li>
-                    {{$serviceSold->price}} €
-                    <br>
-                    {{$serviceSold->issue_date}}
-                </li>
-                <br>
-                @endif
-                @endforeach
-            </ul> --}}
-        </div>
-
         {{-- INCASSATO --}}
         <div>
-            <span class="fs-4">Totale incassato: €</span>
-
+            <span class="fs-4">Provvigioni incassate: {{$commissionsAlreadyPaid}} €</span>
         </div>
 
         {{-- NON INCASSATO --}}
         <div>
-            <span class="fs-4">Totale da incassare: €</span>
-
+            <span class="fs-4">Provvigioni da incassare: {{$commissionsNotPaid}} €</span>
         </div>
     </div>
 

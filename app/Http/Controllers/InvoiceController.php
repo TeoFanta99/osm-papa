@@ -9,7 +9,9 @@ use App\Models\Client;
 use App\Models\Service;
 use App\Models\ServiceSold;
 use App\Models\Installment;
-use App\Models\Commission;
+use App\Models\ServicePerInstallment;
+use App\Models\VssCommission;
+use App\Models\VsdCommission;
 
 class InvoiceController extends Controller
 {
@@ -61,25 +63,12 @@ class InvoiceController extends Controller
         $invoice->save();
 
         $consultantId = $invoice->client->consultant_id;
+        $consultant = Consultant::find($consultantId);
 
         $totalQuantity = 0;
         $totalPrice = 0;
         $servicesData = [];
-
-        $numberOfInstallments = $request->numberOfInstallments;
-
-        $installments = [];
-        // 1° ciclo: numero di rate
-        for ($i = 0; $i < $numberOfInstallments; $i++) {
-
-            $installment = new Installment();
-            $installment->paid = false;
-            $installment->invoice_id = $invoice->id;
-            $installment->amount = $request->amount[$i];
-            $installment->expire_date = $request->expire_date[$i];
-            $installment->save();
-            $installments[] = $installment;
-        }
+        $servicesSold = [];
 
         // ciclo per ogni servizio presente
         foreach ($request->services_quantity as $index => $quantity) {
@@ -94,30 +83,52 @@ class InvoiceController extends Controller
                 $serviceSold->price = $pricePerUnit;
                 $serviceSold->issue_date = $request->invoice_date;
                 $serviceSold->save();
-
-                // creo 2 commissioni per ogni servizio venduto
-                $commission = new Commission();
-                $commission->price = $pricePerUnit * 15 / 100;
-                $commission->consultant_id = $consultantId;
-                $commission->commission_type_id = 1;
-                $commission->save();
-
-                $commission = new Commission();
-                $commission->price = $pricePerUnit * 20 / 100;
-                $commission->consultant_id = $consultantId;
-                $commission->commission_type_id = 1;
-                $commission->save();
+                array_push($servicesSold, $serviceSold);
 
                 $totalPrice += $pricePerUnit;
             }
-
-            $totalQuantity += $quantity;
-
         }
 
-        $invoice->services_quantity = $totalQuantity;
+        $numberOfInstallments = $request->numberOfInstallments;
+        $installments = [];
+
+        for ($i = 0; $i < $numberOfInstallments; $i++) {
+
+            $installment = new Installment();
+            $installment->paid = false;
+            $installment->invoice_id = $invoice->id;
+            $installment->amount = $request->amount[$i];
+            $installment->expire_date = $request->expire_date[$i];
+            $installment->save();
+            $installments[] = $installment; // stessa cosa di array push
+
+        };
+        
+        foreach ($servicesSold as $serviceSold) {
+            foreach ($installments as $installment) {
+                $servicePerInstallment = new ServicePerInstallment();
+                $servicePerInstallment->service_sold_id = $serviceSold->id;
+                $servicePerInstallment->installment_id = $installment->id;
+                $servicePerInstallment->price = $serviceSold->price / $numberOfInstallments;
+                $servicePerInstallment->save();
+
+                $vssCommission = new VssCommission();
+                $vssCommission->service_per_installment_id = $servicePerInstallment->id;
+                $vssCommission->consultant_id = $consultantId;
+                $vssCommission->value = $servicePerInstallment->price * 0.15;
+                $vssCommission->save();
+                
+                $vsdCommission = new VsdCommission();
+                $vsdCommission->service_per_installment_id = $servicePerInstallment->id;
+                $vsdCommission->consultant_id = $consultantId;
+                $vsdCommission->value = $servicePerInstallment->price * ($consultant->level_id == 2 ? 0.25 : 0.2);
+                $vsdCommission->save();
+            }
+        }
+
         $invoice->price = $totalPrice;
         $invoice->save();
+
 
         return redirect()->route('index.invoices', $invoice->id)->with('success', 'Fattura e rata create con successo!');
     }
@@ -131,14 +142,13 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $invoice = Invoice::find($id);
-        $servicesSold = ServiceSold::where('invoice_id', $invoice->id)->get(); // ->groupBy('service_id');
+        $servicesSold = ServiceSold::where('invoice_id', $invoice->id)->get();
+
         $installments = Installment::where('invoice_id', $invoice->id)->get();;
         $consultants = Consultant::all();
         $client = $invoice->client;
         $numberOfInstallments = $installments->count();
-
-        // $consultant_id = $client ? $client->consultant_id : null;
-        // $services = Service::all();
+        // $servicesPerInstallment = ServicePerInstallment::where('installment_id', $installment)
 
         return view('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'client', 'consultants', 'numberOfInstallments'));
     }

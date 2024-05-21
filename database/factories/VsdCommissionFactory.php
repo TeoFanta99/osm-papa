@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class CommissionTypeFactory extends Factory
+class VsdCommissionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class CommissionTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake() -> word();
+            'value' => fake() -> randomFloat(2, 100, 1000000),
         ];
     }
 }

@@ -80,8 +80,7 @@ class ServiceSoldController extends Controller
 
             $invoiceId = $serviceSold->invoice->id;
         }
-    
-        // Redirect o risposta di successo
+
         return redirect() -> route('show.invoice', ['id' => $invoiceId]);
     }
 

@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('commission_types', function (Blueprint $table) {
+        Schema::create('vsd_commissions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->decimal('value', 9, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('commission_types');
+        Schema::dropIfExists('vsd_commissions');
     }
 };

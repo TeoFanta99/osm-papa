@@ -21,7 +21,6 @@ class ClientFactory extends Factory
 
         return [
             'name' => fake() -> company(),
-            'address' => fake() -> address(),
             'consultant_id' => $consultant -> id,
         ];
     }

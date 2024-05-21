@@ -25,7 +25,6 @@ class InvoiceFactory extends Factory
             'price' => fake() -> randomFloat(2, 100, 1000),
             'invoice_date' => fake() -> dateTimeThisYear()->format('Y-m-d'),
             'paid' => fake() -> boolean(),
-            'services_quantity' => fake() -> randomDigit(),
             'client_id' => $client->id,
         ];
     }

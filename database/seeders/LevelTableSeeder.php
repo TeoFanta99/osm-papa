@@ -21,7 +21,7 @@ class LevelTableSeeder extends Seeder
         foreach ($levelsDecoded as $level) {
 
             $newLevel = new Level();
-            $newLevel->title = $level['name'];
+            $newLevel->name = $level['name'];
             $newLevel->save();
             
         }

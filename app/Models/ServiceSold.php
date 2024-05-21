@@ -22,4 +22,9 @@ class ServiceSold extends Model
     {
         return $this -> belongsTo(Service :: class);
     }
+
+    public function servicesPerInstallment()
+    {
+        return $this -> hasMany(servicePerInstallment :: class);
+    }
 }

@@ -16,7 +16,7 @@ class InvoiceTableSeeder extends Seeder
      */
     public function run()
     {
-        Invoice :: factory()->count(1)->create()->each(function ($invoice) {
+        Invoice :: factory()->count(0)->create()->each(function ($invoice) {
             ServiceSold :: factory()->count(3)->create(['invoice_id' => $invoice->id]);
             
             $totalPrice = $invoice->servicesSold()->sum('price');

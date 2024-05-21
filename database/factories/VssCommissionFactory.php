@@ -3,13 +3,11 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Consultant;
-use App\Models\Installment;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class CommissionFactory extends Factory
+class VssCommissionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,9 +16,8 @@ class CommissionFactory extends Factory
      */
     public function definition()
     {
-
         return [
-            'price' => fake() -> randomFloat(2, 100, 1000),
+            'value' => fake() -> randomFloat(2, 100, 1000000),
         ];
     }
 }

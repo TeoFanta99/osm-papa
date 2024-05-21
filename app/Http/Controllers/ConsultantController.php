@@ -8,6 +8,8 @@ use App\Models\Consultant;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\ServiceSold;
+use App\Models\VssCommission;
+use App\Models\VsdCommission;
 
 class ConsultantController extends Controller
 {
@@ -55,31 +57,35 @@ class ConsultantController extends Controller
         $consultant = Consultant :: find($id);
         $clients = Client :: where('consultant_id', $consultant->id)->get();
         $servicesSold = ServiceSold :: all();
-
-        $invoices = collect();
-        foreach ($clients as $client) {
-            $invoices = $invoices->merge(Invoice::where('client_id', $client->id)->get());
-        }
+        $vssCommissions = VssCommission :: where('consultant_id', $consultant->id)->get();
+        $vsdCommissions = VsdCommission :: where('consultant_id', $consultant->id)->get();
 
         $currentMonth = Carbon::now()->format('m');
-        $totalVSD = 0;
-        $totalVSS = 0;
 
-        // Totale VSS del mese corrente
-        foreach ($invoices as $invoice) {
-            if (Carbon::parse($invoice->invoice_date)->format('m') == $currentMonth){
-            $totalVSS += $invoice->price;
-            }
-        }
+        // COMMISSIONI PAGATE
+        $vssPaid = $vssCommissions->filter(function ($commission) {
+            return $commission->servicePerInstallment->installment->paid;
+        })->sum('value');
 
-        // Totale VSD del mese corrente
-        foreach ($servicesSold as $serviceSold) {
-            if (Carbon::parse($serviceSold->issue_date)->format('m') == $currentMonth && $serviceSold->delivered_by == $consultant->id) {
-                $totalVSD += $serviceSold->price;
-            }
-        }
+        $vsdPaid = $vsdCommissions->filter(function ($commission) {
+            return $commission->servicePerInstallment->installment->paid;
+        })->sum('value');
 
-        return view('pages.consultant', compact('consultant', 'clients', 'invoices', 'servicesSold', 'totalVSD', 'totalVSS', 'currentMonth'));
+
+        // COMMISSIONI NON PAGATE
+        $vssUnpaid = $vssCommissions->filter(function ($commission) {
+            return !$commission->servicePerInstallment->installment->paid;
+        })->sum('value');
+
+        $vsdUnpaid = $vsdCommissions->filter(function ($commission) {
+            return !$commission->servicePerInstallment->installment->paid;
+        })->sum('value');
+
+
+        $commissionsAlreadyPaid = $vssPaid + $vsdPaid;
+        $commissionsNotPaid = $vssUnpaid + $vsdUnpaid;
+
+        return view('pages.consultant', compact('consultant', 'clients', 'servicesSold', 'currentMonth', 'commissionsAlreadyPaid', 'commissionsNotPaid'));
     }
 
     /**

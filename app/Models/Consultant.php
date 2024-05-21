@@ -24,8 +24,13 @@ class Consultant extends Model
         return $this -> hasMany(Client :: class);
     }
 
-    public function commissions()
+    public function vssCommissions()
     {
-        return $this -> hasMany(Commission :: class);
+        return $this -> hasMany(VssCommission:: class);
+    }
+
+    public function vsdCommissions()
+    {
+        return $this -> hasMany(VsdCommission:: class);
     }
 }

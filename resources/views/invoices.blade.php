@@ -62,7 +62,6 @@
         </div>
 
         @foreach ($invoices as $invoice)
-
         <div>
             <a class="ms_row d-flex" href="{{route('show.invoice', $invoice->id)}}"
                 style="text-decoration: none; color: black">
@@ -112,7 +111,7 @@
                     $serviceName = $services->first()->service->name;
                     $servicePrice = $services->first()->price;
                     $serviceQuantity = $services->count();
-                    $totalPricePerService = number_format($servicePrice * $serviceQuantity, 2, '.', '');
+                    $totalPricePerService = $servicePrice * $serviceQuantity;
                     @endphp
 
                     <div style="display: flex;">
@@ -123,10 +122,10 @@
                             {{$serviceQuantity}}
                         </div>
                         <div class="col-2" style="border: 1px solid lightgray">
-                            {{$servicePrice}}
+                            {{ number_format($servicePrice, 2, ',', '.') }}
                         </div>
                         <div class="col-3" style="border: 1px solid lightgray">
-                            {{$totalPricePerService}}
+                            {{ number_format($totalPricePerService, 2, ',', '.') }}
                         </div>
                     </div>
                     @endforeach
@@ -135,19 +134,19 @@
                 {{-- NETTO --}}
                 <div class="col_net border border-dark"
                     style="display: flex; justify-content: center; align-items: center">
-                    {{$imponibile}}
+                    {{ number_format($imponibile, 2, ',', '.') }}
                 </div>
 
                 {{-- IVA --}}
                 <div class="col_iva border border-dark"
                     style="display: flex; justify-content: center; align-items: center">
-                    {{$iva}}
+                    {{ number_format($iva, 2, ',', '.') }}
                 </div>
 
                 {{-- TOTALE LORDO --}}
                 <div class="col_totalPrice border border-dark"
                     style="display: flex; justify-content: center; align-items: center">
-                    {{$totaleFattura}}
+                    {{ number_format($totaleFattura, 2, ',', '.') }}
                 </div>
 
                 {{-- RATE --}}
@@ -156,7 +155,7 @@
                     <div style="display: flex;">
                         <div class="col-5"
                             style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center">
-                            {{$installment->amount}}
+                            {{ number_format($installment->amount, 2, ',', '.') }}
                         </div>
                         <div class="col-2"
                             style="border: 1px solid lightgray; @if ($installment->paid) background-color: green; @else background-color:red; @endif">

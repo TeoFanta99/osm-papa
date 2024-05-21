@@ -18,5 +18,10 @@ class Installment extends Model
     public function invoice()
     {
         return $this -> belongsTo(Invoice :: class);
-    }    
+    }
+    
+    public function servicePerInstallments()
+    {
+        return $this -> hasMany(servicePerInstallment :: class);
+    }
 }
