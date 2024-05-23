@@ -134,6 +134,14 @@ class InstallmentController extends Controller
 
         $invoice = Invoice::findOrFail($id);
 
+        // Verifico se tutte le rate sono state pagate e, in caso, aggiorno il valore paid di invoice
+        $allInstallmentsPaid = $invoice->installments()->where('paid', false)->count() === 0;
+        if ($allInstallmentsPaid) {
+            $invoice->paid = true;
+            $invoice->save();
+        }
+        
+
         return redirect()->route('show.invoice', $invoice->id);
     }
 

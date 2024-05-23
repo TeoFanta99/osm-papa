@@ -21,8 +21,8 @@
                     <h2>FATTURA N° {{$invoice->id}}</h2>
                     <br>
 
+                    {{-- Raggruppa i servizi venduti per service_id --}}
                     @php
-                    // RAGGRUPPAMENTO DEI SERVIZI VENDUTI
                     $groupedServices = $servicesSold->groupBy("service_id");
                     @endphp
 
@@ -98,14 +98,12 @@
                 </form>
             </div>
 
+            {{-- Somma il valore delle rate della fattura --}}
             @php
             $totalInstallments = $invoice->installments->sum('amount');
             @endphp
 
             @if ($invoice->price != $totalInstallments)
-            @php
-            // dd($totalInstallments);
-            @endphp
             <span class="border border-3 border-danger" style="padding: 30px; width: 90%; margin-left: 30px">
                 Attenzione! La somma del netto delle rate non corrisponde al totale netto della fattura
                 <br><br>
@@ -133,12 +131,14 @@
                                 <div class="col-12 installment-card">
                                     <span><b>Rata n. {{ $loop->iteration }}</b></span>
                                     <br><br>
-                                    {{-- PREZZO DELLA RATA --}}
+
+                                    {{-- Calcolo il prezzo della rata --}}
                                     @php
                                     $imponibile = $installment->amount;
                                     $iva = $imponibile * 0.22;
                                     $totale = $imponibile + $iva;
                                     @endphp
+
                                     <label for="amount_{{ $installment->id }}">Netto: {{ number_format($imponibile, 2,
                                         ',', '.') }} €
                                     </label>
@@ -161,6 +161,16 @@
                                         value="{{ date('Y-m-d', strtotime($installment->expire_date)) }}">
                                     <br><br>
 
+                                    {{-- DATA DI PAGAMENTO --}}
+                                    @if ($installment->paid)
+                                    <label for="updated_at_{{$installment->updated_at}}">
+                                        <u>Pagamento effettuato il {{date('d-m-Y',
+                                            strtotime($installment->updated_at))}}</u>
+                                    </label>
+                                    <br><br>
+                                    @endif
+
+
                                     {{-- STATO PAGAMENTO --}}
                                     <label for="paid_{{ $installment->id }}">Stato: </label>
                                     <span class="info-span {{$installment->paid ? 'text-success' : 'text-danger'}}"
@@ -173,12 +183,12 @@
                                         </option>
                                         <option value="1" {{ $installment->paid == 1 ? 'selected' : '' }}>Pagata
                                         </option>
-                                    </select>
+                                    </select> <br>
                                 </div>
 
 
                                 {{-- SEZIONE SERVIZI A SCHERMO --}}
-                                <div class="servicesTable" style="width: 100%; margin-bottom: 20px">
+                                <div class="servicesTable" style="width: 100%; margin-bottom: 20px; padding: 20px">
                                     <div class="headerRow">
                                         <div class="border border-dark service_col">Servizio</div>
                                         <div class="border border-dark price_col">Prezzo del servizio</div>
@@ -204,14 +214,13 @@
                                             {{ number_format($totalPrice, 2, ',', '.') }} €
                                         </div>
                                     </div>
-
-
                                     @endforeach
                                 </div>
 
 
                                 {{-- SEZIONE SERVIZI EDITABILE --}}
-                                <div class="editableServicesTable" style="width: 100%; display: none">
+                                <div class="editableServicesTable"
+                                    style="width: 100%; display: none; margin-bottom: 20px; padding: 20px">
                                     <div class="headerRow">
                                         <div class="border border-dark service_editable_col">Servizio</div>
                                         <div class="border border-dark price_editable_col">Prezzo del servizio</div>
