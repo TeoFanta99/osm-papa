@@ -16,59 +16,103 @@
     setlocale(LC_TIME, 'it_IT');
     $currentMonth = strftime('%B');
     $currentYear = strftime('%Y');
-    $startDateFormatted = $startDate->locale('it')->isoFormat('LL');
-    $endDateFormatted = $endDate->locale('it')->isoFormat('LL');
+
     @endphp
 
-    <br><br><br>
+    <br>
     <div class="container">
-        <h2 class="statsTitle">Dal {{$startDateFormatted}} al {{$endDateFormatted}}</h2>
-        <br>
+        {{-- <h2 class="statsTitle">
+            Statistiche
+            dal {{ $startDateFormatted }}
+            al {{ $endDateFormatted }}
+        </h2>
+        <br> --}}
 
         <div class="section-container">
+            <span class="fs-4">Somme incassate nel mese di {{$currentMonth}}: {{ number_format($currentMonthCashed, 2,
+                ',', '.') }} €
+            </span>
+            <br>
+            <span class="fs-4">Somme ancora da incassare: {{ number_format($notCashed, 2, ',', '.') }} €
+            </span>
+            <br>
+            @php
+            $totaliPrevisti = $currentMonthCashed + $notCashed;
+            @endphp
+            <span class="fs-4">Totali previsti: {{ number_format($totaliPrevisti, 2, ',', '.') }} €
+            </span>
+            <br><br>
+
+            <div class="commissionsInfo">
+                <div>
+                    <span class="fs-4">Provvigioni maturate nel mese di {{$currentMonth}}:
+                        {{ number_format($commissionsCashed, 2, ',', '.') }} €</span>
+                </div>
+                <div>
+                    <span class="fs-4">Provvigioni da maturare: {{ number_format($commissionsNotCashed, 2, ',', '.')
+                        }} €</span>
+                </div>
+                @php
+                $totalCommissions = $commissionsCashed + $commissionsNotCashed;
+                @endphp
+                <div>
+                    <span class="fs-4">Totali previsti: {{ number_format($totalCommissions, 2, ',', '.')
+                        }} €</span>
+                </div>
+            </div>
+            <br>
+            <div class="invoicesInfo">
+
+            </div>
+
+            <br><br><br>
 
             {{-- Form di filtraggio per data --}}
-            {{-- <form method="GET" action="{{ route('show.consultant', $consultant->id) }}" class="filter-form">
+            <h3>Ricerca per periodo: dal {{ $startDateFormatted }} al {{ $endDateFormatted }}</h3>
+            <br>
+            <form method="GET" action="{{ route('show.consultant', $consultant->id) }}" class="filter-form">
                 <div class="form-group">
                     <label style="margin-right: 5px" for="start_date">Dal:</label>
-                    <input class="date-input" type="date" id="start_date" name="start_date"
-                        value="{{ date('Y-m-d', strtotime($startDate)) }}">
+                    <input class="date-input" type="date" id="inputStartDate" name="inputStartDate"
+                        value="{{ request('inputStartDate', $inputStart) }}">
                 </div>
                 <br>
                 <div class="form-group">
                     <label style="margin-right: 5px" for="end_date">Al:</label>
-                    <input class="date-input" type="date" id="end_date" name="end_date"
-                        value="{{ date('Y-m-d', strtotime($endDate)) }}">
+                    <input class="date-input" type="date" id="inputEndDate" name="inputEndDate"
+                        value="{{ request('inputEndDate', $inputEnd) }}">
                 </div>
                 <br>
                 <button type="submit" class="filterBtn">Filtra</button>
-            </form> --}}
-            <br><br>
-            {{-- questa voce deve rimanere sempre uguale, contare le rate, non le invoices --}}
-            <span>Somme incassate dal {{ date('d/m/Y', strtotime($currentMonthFirstDay)) }} (1° giorno del
-                mese corrente) ad oggi:
-                {{ number_format($totalInstallmentsCurrentMonth, 2, ',', '.')}} €</span>
-            <br><br>
-            <span>Somme da incassare (dal 1° giorno del DB all'ultimo giorno del mese corrente): </span>
-            <br><br>
+            </form>
 
-
-            {{-- Risultati del filtraggio --}}
+            {{-- Risultato del filtraggio --}}
             <div class="filteredResults">
-                <div class="commissionsInfo">
-                    <div>
-                        <span class="fs-4">Provvigioni maturate dal {{ date('d/m/Y', strtotime($currentMonthFirstDay))
-                            }} (1° giorno del mese corrente) ad oggi: {{$commissionsPaid}} €</span>
-                    </div>
-                    <div>
-                        <span class="fs-4">Provvigioni da maturare (dal 1° giorno del DB all'ultimo giorno del mese
-                            corrente): {{$commissionsNotPaid}} €</span>
-                    </div>
-                </div>
+                <span class="fs-5">Somme incassate: {{ number_format($filteredDateCashed, 2,
+                    ',', '.') }} € </span>
                 <br>
-                <div class="invoicesInfo">
+                <span class="fs-5">Somme ancora da incassare: {{ number_format($filteredDateNotCashed, 2,
+                    ',', '.') }} €</span>
+                <br>
+                @php
+                $filteredDateTotalCashed = $filteredDateCashed + $filteredDateNotCashed;
+                @endphp
+                <span class="fs-5">Totali previsti: {{ number_format($filteredDateTotalCashed, 2,
+                    ',', '.') }} €</span>
+                <br><br>
 
-                </div>
+
+                <span class="fs-5">Provvigioni maturate: {{ number_format($filteredDateCommissionsCashed, 2,
+                    ',', '.') }} €</span>
+                <br>
+                <span class="fs-5">Provvigioni da maturare: {{ number_format($filteredDateCommissionsNotCashed, 2,
+                    ',', '.') }} €</span>
+                <br>
+                @php
+                $filteredDateCommissionsCashed = $filteredDateCommissionsCashed + $filteredDateCommissionsNotCashed;
+                @endphp
+                <span class="fs-5">Totali previsti: {{ number_format($filteredDateCommissionsCashed, 2,
+                    ',', '.') }} €</span>
             </div>
         </div>
     </div>

@@ -69,19 +69,7 @@ class ServiceSoldController extends Controller
      */
     public function update(Request $request)
     {
-        $data = $request->input('servicesSold');
-
-        $invoiceId = null;
-    
-        foreach ($data as $serviceSoldData) {
-            $serviceSold = ServiceSold::findOrFail($serviceSoldData['id']);
-            $serviceSold->delivered_by = $serviceSoldData['delivered_by'];
-            $serviceSold->update();
-
-            $invoiceId = $serviceSold->invoice->id;
-        }
-
-        return redirect() -> route('show.invoice', ['id' => $invoiceId]);
+        //
     }
 
     /**

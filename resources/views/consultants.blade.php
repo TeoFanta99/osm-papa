@@ -4,7 +4,11 @@
 @include('components.sidebar')
 <div class="main-content d-flex flex-column align-items-center">
 
-    <h1>I tuoi consulenti</h1>
+    <div class="topPage">
+        <h1 style="display: inline-block">I tuoi consulenti</h1>
+        <a href="{{route('create.consultant')}}" class="newConsultant">Nuovo consulente</a>
+    </div>
+
     <div class="ms_container d-flex flex-wrap">
         @foreach ($consultants as $consultant)
         <a class="consultantNameCard col-12 col-md-6 col-lg-4" href="{{route('show.consultant', $consultant->id)}}">
@@ -38,5 +42,12 @@
                 background-color: rgb(181, 181, 181);
             }
         }
+    }
+
+    .newConsultant {
+        text-decoration: none;
+        color: white;
+        background-color: #4a6da7;
+        padding: 5px;
     }
 </style>

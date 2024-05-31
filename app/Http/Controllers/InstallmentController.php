@@ -139,8 +139,11 @@ class InstallmentController extends Controller
         if ($allInstallmentsPaid) {
             $invoice->paid = true;
             $invoice->save();
+        } else {
+            $invoice->paid = false;
+            $invoice->save();
         }
-        
+        // dd($allInstallmentsPaid);
 
         return redirect()->route('show.invoice', $invoice->id);
     }

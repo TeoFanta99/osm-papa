@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-5"
                         style="font-size: 12px; height: 100%; display: flex; align-items: center; justify-content: center">
-                        Scadenza</div>
+                        Scadenza/Pagata il...</div>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 {{-- ID --}}
                 <div class="col_id border border-dark"
                     style="display: flex; justify-content: center; align-items: center; text-decoration: none">
-                    {{$invoice->id}}
+                    {{ $invoice->invoice_number }}
                 </div>
 
                 {{-- DATA --}}
@@ -162,9 +162,16 @@
                         </div>
                         <div class="col-5"
                             style="border: 1px solid lightgray; display: flex; justify-content: center; align-items: center">
+                            @if ($installment->paid)
                             {{
                             date('j/n/y',
-                            strtotime($installment->expire_date))}}</div>
+                            strtotime($installment->updated_at))}}
+                            @else
+                            {{
+                            date('j/n/y',
+                            strtotime($installment->expire_date))}}
+                            @endif
+                        </div>
                     </div>
                     @endforeach
                 </div>

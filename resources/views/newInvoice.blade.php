@@ -23,6 +23,10 @@
             </select><br><br>
             <label for="invoice_date">Data fattura</label><br>
             <input type="date" name="invoice_date" id="invoice_date" value="{{ date('Y-m-d') }}">
+            <br><br>
+            <input type="checkbox" name="noInvoiceNumber" id="noInvoiceNumber">
+            <label for="noInvoiceNumber">Flagga se NON vuoi assegnare il numero alla fattura</label>
+
             <br><br><br>
 
 
@@ -37,11 +41,9 @@
                         </th>
                         <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
                             unitario
-                            (€)
                         </th>
                         <th class="border border-dark" style="width: 150px; background: gray; color: white">Prezzo
                             totale
-                            (€)
                         </th>
                     </tr>
                 </thead>
@@ -60,19 +62,19 @@
                             </datalist>
                         </td>
 
-                        <td class="border border-dark">
+                        <td class="border border-dark" style="width: 100px">
                             <input type="hidden" class="service-price" name="services_price[]"
                                 value="{{$service->price}}">
-                            <input type="number" class="services_quantity" name="services_quantity[]" value="1" min="1"
-                                onchange="updateTotalPrice(this)">
+                            <input style="width: 100%" type="number" class="services_quantity"
+                                name="services_quantity[]" value="1" min="1" onchange="updateTotalPrice(this)">
                         </td>
-                        <td class="border border-dark">
-                            <input type="number" class="price-input" name="price[]" value="" step="0.01"
-                                onchange="updateTotalPrice(this)">
+                        <td class="border border-dark" style="width: 150px">
+                            <input style="width: 100%" type="number" class="price-input" name="price[]" value=""
+                                step="0.01" onchange="updateTotalPrice(this)">
                         </td>
-                        <td class="border border-dark">
-                            <input disabled type="number" class="totalPrice-input" name="totalPrice[]" value=""
-                                step="0.01">
+                        <td class="border border-dark" style="width: 150px">
+                            <input style="width: 100%" disabled type="number" class="totalPrice-input"
+                                name="totalPrice[]" value="" step="0.01">
                             <input type="hidden" class="total-price-hidden" name="total_price[]" value="">
                         </td>
                     </tr>

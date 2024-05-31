@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->integer('invoice_number')->nullable()->unique();
-            $table->decimal('price', 9, 2) ->nullable();
-            $table->dateTime('invoice_date')->nullable();
-            $table->boolean('paid')->default(false);
+            $table->string('title');
+            $table->text('description');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('notes');
     }
 };

@@ -14,88 +14,115 @@
             @endphp
 
             <div class="ms_card">
-                <form action="{{route('update.servicesold')}}" method="POST">
-                    @csrf
-                    @method('PUT')
 
-                    <h2>FATTURA N° {{$invoice->id}}</h2>
-                    <br>
+                <div class="titleContainer">
+                    <form action="{{ route('update.invoice', $invoice->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-                    {{-- Raggruppa i servizi venduti per service_id --}}
-                    @php
-                    $groupedServices = $servicesSold->groupBy("service_id");
-                    @endphp
-
-                    {{-- TABELLA PER COMPUTER --}}
-                    <table class="desktopTable table mb-3">
-                        <thead>
-                            <tr>
-                                <th class="border border-dark" style="background: gray; color: white">
-                                    Servizio
-                                </th>
-                                <th class="border border-dark" style="background: gray; color: white">
-                                    Quantità
-                                </th>
-                                <th class="border border-dark text-center" style="background: gray; color: white">
-                                    Totale netto
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="services-container">
-                            @foreach ($groupedServices as $serviceId => $arrayOfServices)
-                            <tr class="service-row">
-                                <td class="border border-dark">
-                                    {{$arrayOfServices->first()->service->name}}
-                                </td>
-                                <td class="border border-dark">
-                                    {{$arrayOfServices->count()}}
-                                </td>
-                                <td class="border border-dark">
-                                    {{ number_format($arrayOfServices->first()->price * $arrayOfServices->count(), 2,
-                                    ',',
-                                    '.')
-                                    }} €
-                                </td>
-                            </tr>
+                        <span class="title">FATTURA N° </span>
+                        <span class="title" id="invoiceNumberDisplay">{{$invoice->invoice_number}}</span>
+                        <input type="text" name="invoiceNumberInput" id="invoiceNumberInput"
+                            value="{{ $invoice->invoice_number }}">
+                        <br><br>
+                        @if ($errors->any())
+                        <div class="errorInvoiceNumber">
+                            @foreach ($errors->all() as $error)
+                            <span class="fs-5"> {{ $error }}</span>
                             @endforeach
-                        </tbody>
-                    </table>
+                            </ul>
+                        </div><br>
+                        @endif
+                        <a href="#" class="editInvoiceNumber" id="editInvoiceNumber">Modifica n° Fattura</a>
+                        <input hidden type="number" name="maxInvoiceNumber" id="maxInvoiceNumber"
+                            value="{{ $invoiceMaxNumber }}">
+                        @if ($invoice->invoice_number == null)
+                        <input type="checkbox" name="autoFillInvoiceNumber" id="autoFillInvoiceNumber"
+                            class="autoFillCheckbox">
+                        <label class="autoFillCheckbox">Compila automaticamente</label> <br><br>
+                        @endif
 
-                    {{-- TABELLA PER SMARTPHONE --}}
-                    <div class="phoneTable table mb-3">
+                        <input class="saveBtn2" id="saveBtn2" type="submit" value="Salva">
+                    </form>
+                </div>
 
-                        <div class="border border-dark"
-                            style="background: gray; color: white; padding: 10px; font-weight: bold;">
-                            <span>
-                                Servizi in fattura
-                            </span>
-                        </div>
+                <br><br><br>
 
-                        <div class="services-container">
-                            @foreach ($groupedServices as $serviceId => $arrayOfServices)
-                            <div class="service-row">
-                                <div class="border border-dark p-4" style="background-color: white;">
-                                    Servizio: {{$arrayOfServices->first()->service->name}}
-                                    <br><br>
-                                    Quantità: {{$arrayOfServices->count()}}
-                                    <br><br>
-                                    Totale netto: {{ number_format($arrayOfServices->first()->price *
-                                    $arrayOfServices->count(), 2,
-                                    ',',
-                                    '.')
-                                    }} €
-                                    <br><br>
-                                </div>
+                {{-- Raggruppa i servizi venduti per service_id --}}
+                @php
+                $groupedServices = $servicesSold->groupBy("service_id");
+                @endphp
 
-                            </div>
-                            @endforeach
-                        </div>
+                {{-- TABELLA PER COMPUTER --}}
+                <table class="desktopTable table mb-3">
+                    <thead>
+                        <tr>
+                            <th class="border border-dark" style="background: gray; color: white">
+                                Servizio
+                            </th>
+                            <th class="border border-dark" style="background: gray; color: white">
+                                Quantità
+                            </th>
+                            <th class="border border-dark text-center" style="background: gray; color: white">
+                                Totale netto
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="services-container">
+                        @foreach ($groupedServices as $serviceId => $arrayOfServices)
+                        <tr class="service-row">
+                            <td class="border border-dark">
+                                {{$arrayOfServices->first()->service->name}}
+                            </td>
+                            <td class="border border-dark">
+                                {{$arrayOfServices->count()}}
+                            </td>
+                            <td class="border border-dark">
+                                {{ number_format($arrayOfServices->first()->price * $arrayOfServices->count(), 2,
+                                ',',
+                                '.')
+                                }} €
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                {{-- TABELLA PER SMARTPHONE --}}
+                <div class="phoneTable table mb-3">
+
+                    <div class="border border-dark"
+                        style="background: gray; color: white; padding: 10px; font-weight: bold;">
+                        <span>
+                            Servizi in fattura
+                        </span>
                     </div>
 
-                    <span>Totale Netto Fattura: {{ number_format($nettoFattura, 2, ',', '.') }} €</span><br>
-                    <span>IVA: {{ number_format($ivaFattura, 2, ',', '.') }} €</span><br>
-                    <span>Totale Fattura: {{ number_format($lordoFattura, 2, ',', '.') }} €</span>
-                </form>
+                    <div class="services-container">
+                        @foreach ($groupedServices as $serviceId => $arrayOfServices)
+                        <div class="service-row">
+                            <div class="border border-dark p-4" style="background-color: white;">
+                                Servizio: {{$arrayOfServices->first()->service->name}}
+                                <br><br>
+                                Quantità: {{$arrayOfServices->count()}}
+                                <br><br>
+                                Totale netto: {{ number_format($arrayOfServices->first()->price *
+                                $arrayOfServices->count(), 2,
+                                ',',
+                                '.')
+                                }} €
+                                <br><br>
+                            </div>
+
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <span>Totale Netto Fattura: {{ number_format($nettoFattura, 2, ',', '.') }} €</span><br>
+                <span>IVA: {{ number_format($ivaFattura, 2, ',', '.') }} €</span><br>
+                <span>Totale Fattura: {{ number_format($lordoFattura, 2, ',', '.') }} €</span>
+
             </div>
 
             {{-- Somma il valore delle rate della fattura --}}
@@ -300,6 +327,23 @@
             });
         });
 
+        document.getElementById('editInvoiceNumber').addEventListener('click', function() {
+            event.preventDefault();
+            let editInvoiceNumber = document.getElementById('editInvoiceNumber');
+            let invoiceNumberInput = document.getElementById('invoiceNumberInput');
+            let invoiceNumberDisplay = document.getElementById('invoiceNumberDisplay');
+            let saveBtn2 = document.getElementById('saveBtn2');
+            let autoFillCheckbox = document.querySelectorAll('.autoFillCheckbox');
+            invoiceNumberInput.style.display = 'inline-block';
+            saveBtn2.style.display = 'inline-block';
+            invoiceNumberDisplay.style.display = 'none';
+            editInvoiceNumber.style.display = 'none';
+            autoFillCheckbox.forEach(function(element) {
+                element.style.display = 'inline-block';
+            });
+        });
+
+
         document.getElementById('edit-installments').addEventListener('click', function() {
             let installmentSpans = document.querySelectorAll('.info-span');
             let installmentInputs = document.querySelectorAll('.info-input');
@@ -330,7 +374,18 @@
             });
 
         }); 
+
+        function autoFillInvoiceNumber() {
+            let maxInvoiceNumber = document.getElementById('maxInvoiceNumber').value;
+            let newMaxInvoiceNumber = parseInt(maxInvoiceNumber) + 1;
+            document.getElementById('invoiceNumberInput').value = newMaxInvoiceNumber;
+        }
+
+        // Assegna l'evento onclick alla checkbox
+        document.getElementById('autoFillInvoiceNumber').addEventListener('click', autoFillInvoiceNumber);
+
     });
+
 </script>
 @endpush
 
@@ -349,6 +404,25 @@
                 width: 100%;
                 min-height: 200px;
                 padding: 30px;
+
+                .titleContainer {
+                    .title {
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                    #invoiceNumberInput {
+                        display: none;
+                        width: 50px;
+                    }
+
+                    .errorInvoiceNumber {
+                        border: 2px solid red;
+                        padding: 10px;
+                        width: 50%;
+
+                    }
+                }
 
                 .phoneTable {
                     display: none;
@@ -378,6 +452,19 @@
         background-color: rgb(28, 192, 28);
         border: none;
         color: white;
+    }
+
+    .saveBtn2 {
+        background-color: rgb(28, 192, 28);
+        border: none;
+        color: white;
+        padding: 8px;
+        font-size: 14px;
+        display: none;
+    }
+
+    .autoFillCheckbox {
+        display: none;
     }
 
     .saveBtn:hover {
@@ -467,6 +554,16 @@
         padding: 10px;
     }
 
+    .editInvoiceNumber {
+        border: 1px solid black;
+        padding: 10px;
+        background-color: #29c7d9;
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        border: none;
+    }
+
 
     /* MEDIA QUERY */
     @media all and (max-width: 752px) {
@@ -481,6 +578,7 @@
             }
         }
     }
+
 
     @media all and (max-width: 688px) {
         .container_macro {

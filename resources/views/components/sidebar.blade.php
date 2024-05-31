@@ -12,6 +12,12 @@
             <span>Profilo</span>
         </a>
     </div>
+    <div class="ms_btn profile-btn">
+        <a href="{{route('index.area')}}">
+            <i class="fa-solid fa-globe"></i>
+            <span>La mia area</span>
+        </a>
+    </div>
     <div class="ms_btn consultants-btn">
         <a href="{{ route('index.consultants') }}">
             <i class="fa-solid fa-people-group"></i>
@@ -34,6 +40,12 @@
         <a href="">
             <i class="fa-solid fa-chart-line"></i>
             <span>Statistiche</span>
+        </a>
+    </div>
+    <div class="ms_btn stats-btn">
+        <a href="{{route('index.notes')}}">
+            <i class="fa-regular fa-note-sticky"></i>
+            <span>Note</span>
         </a>
     </div>
     <div class="ms_btn">

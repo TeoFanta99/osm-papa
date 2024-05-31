@@ -23,7 +23,7 @@ class InvoiceController extends Controller
     public function index()
     {
         // recupera le fatture e le ordina per id decrescente
-        $invoices = Invoice::orderBy('id', 'desc')->get();
+        $invoices = Invoice::orderBy('invoice_number', 'desc')->get();
         $consultants = Consultant::all();
         $servicesSold = ServiceSold::all();
         $services = Service::all();
@@ -60,6 +60,15 @@ class InvoiceController extends Controller
         $invoice->client_id = $data['client'];
         $invoice->invoice_date = $request->invoice_date;
         $invoice->paid = false;
+
+        
+        if ($request->has('noInvoiceNumber')) { // controlla se il checkbox è stato selezionato
+            $invoice->invoice_number = null;
+        } else {
+            $lastInvoiceNumber = Invoice::max('invoice_number');
+            $invoice->invoice_number = $lastInvoiceNumber ? $lastInvoiceNumber + 1 : 1;
+        }
+
         $invoice->save();
 
         $consultantId = $invoice->client->consultant_id;
@@ -148,9 +157,9 @@ class InvoiceController extends Controller
         $consultants = Consultant::all();
         $client = $invoice->client;
         $numberOfInstallments = $installments->count();
-        // $servicesPerInstallment = ServicePerInstallment::where('installment_id', $installment)
+        $invoiceMaxNumber = Invoice::max('invoice_number');
 
-        return view('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'client', 'consultants', 'numberOfInstallments'));
+        return view('pages.invoice', compact('invoice', 'installments', 'servicesSold', 'client', 'consultants', 'numberOfInstallments', 'invoiceMaxNumber'));
     }
 
     /**
@@ -173,7 +182,27 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $invoice = Invoice :: find($id);
+
+        $request->validate([
+            'invoiceNumberInput' => 'nullable|unique:invoices,invoice_number,' . $id
+        ], [
+            'invoiceNumberInput.unique' => 'Il numero di fattura inserito è già presente nel database.'
+        ]);
+
+
+        $invoiceNumber = (int) $request -> input('invoiceNumberInput');
+
+        
+        if ($invoiceNumber == 0) {
+            $invoice->invoice_number = null;
+        } else {
+            $invoice->invoice_number = $invoiceNumber;
+        }
+
+        $invoice->save();
+
+        return redirect()->route('show.invoice', $invoice->id);
     }
 
     /**
